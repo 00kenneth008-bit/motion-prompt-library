@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例公司 — 滚动时间线</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #FAFAF8; color: #222; overflow-x: hidden; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  p { font-size: 17px; line-height: 1.7; color: #555; }
+  /* 顶部进度条 */
+  .progress-wrap { position: fixed; top: 0; left: 0; right: 0; height: 6px; background: #E8E8E8; z-index: 10; }
+  #progressBar { height: 100%; background: #1F3A8A; transform-origin: left; transform: scaleX(0); transition: transform 200ms cubic-bezier(0.2,0,0,1); }
+  #progressPct { position: fixed; top: 16px; right: 24px; z-index: 10; font-size: 15px; color: #1F3A8A; font-weight: 600; background: #fff; padding: 4px 10px; border-radius: 999px; border: 1px solid #E0E0E0; }
+  /* 环境层：圆点阵列呼吸 */
+  .ambient { position: absolute; top: 0; left: 0; right: 0; height: 420px; pointer-events: none; }
+  .ambient i { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #DCE3F2; animation: ambientBreathe 4s ease-in-out infinite alternate; }
+  .ambient i:nth-child(1) { top: 60px; left: 12%; }
+  .ambient i:nth-child(2) { top: 140px; left: 38%; animation-delay: 1s; }
+  .ambient i:nth-child(3) { top: 80px; left: 64%; animation-delay: 2s; }
+  .ambient i:nth-child(4) { top: 180px; left: 86%; animation-delay: 3s; }
+  @keyframes ambientBreathe { from { opacity: 0.9; } to { opacity: 1; } }
+  .hero { position: relative; text-align: center; padding: 140px 24px 80px; }
+  .hero h1 { font-size: 44px; font-weight: 700; margin: 16px 0; position: relative; }
+  .hero p { max-width: 640px; margin: 0 auto; position: relative; }
+  .kicker { font-size: 15px; letter-spacing: 4px; color: #1F3A8A; font-weight: 600; position: relative; }
+  /* 视差层 */
+  .plx-bg { position: absolute; top: 420px; left: 0; right: 0; height: 300px; background: #EDF1F9; z-index: 0; will-change: transform; }
+  .plx-mid { position: absolute; top: 700px; left: 0; right: 0; height: 200px; background: #E2E9F7; z-index: 0; will-change: transform; }
+  .timeline { position: relative; z-index: 1; padding: 40px 0 80px; }
+  .tl-line { position: absolute; left: 31px; top: 0; bottom: 0; width: 2px; background: #D5DBE8; transform-origin: top; transition: transform 200ms cubic-bezier(0.2,0,0,1); }
+  .milestone { position: relative; padding: 0 0 64px 80px; opacity: 0.4; transform: translateY(16px); transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); }
+  .milestone:nth-child(2) { transition-delay: 80ms; }
+  .milestone:nth-child(3) { transition-delay: 160ms; }
+  .milestone:nth-child(4) { transition-delay: 80ms; }
+  .milestone:nth-child(5) { transition-delay: 160ms; }
+  .milestone.lit { opacity: 1; transform: translateY(0); }
+  .milestone .dot { position: absolute; left: 20px; top: 4px; width: 24px; height: 24px; border-radius: 50%; background: #C9D2E6; transform: scale(0.6); transition: transform 300ms cubic-bezier(0.2,0,0,1), background-color 300ms cubic-bezier(0.2,0,0,1); }
+  .milestone.lit .dot { background: #1F3A8A; transform: scale(1); }
+  .tl-caption { font-size: 15px; letter-spacing: 2px; color: #1F3A8A; font-weight: 600; opacity: 0; transform: translateY(5px); transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); transition-delay: 160ms; }
+  .milestone.lit .tl-caption { opacity: 1; transform: translateY(0); }
+  .milestone h3 { font-size: 24px; margin: 8px 0 10px; }
+  .btn { background: #1F3A8A; color: #fff; border: none; padding: 12px 28px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 300ms cubic-bezier(0.2,0,0,1); }
+  .btn:hover { opacity: 0.85; }
+  .cta { text-align: center; padding: 64px 24px 80px; position: relative; z-index: 1; }
+  .cta h2 { font-size: 32px; margin-bottom: 24px; }
+  footer { text-align: center; padding: 32px; color: #888; font-size: 16px; border-top: 1px solid #EEE; }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 32px; }
+    .milestone { padding-left: 64px; }
+    .tl-line { left: 23px; }
+    .milestone .dot { left: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="progress-wrap"><div id="progressBar"></div></div>
+<div id="progressPct">0%</div>
+<header class="hero">
+  <div class="ambient"><i></i><i></i><i></i><i></i></div>
+  <div class="kicker">示例公司 · 历程</div>
+  <h1>四年，四段路</h1>
+  <p>向下滚动，沿着时间线读完示例公司的四个阶段，顶部进度条会告诉你读到了哪里。</p>
+</header>
+<div class="plx-bg" id="plxBg"></div>
+<div class="plx-mid" id="plxMid"></div>
+<main class="container"><div class="timeline" id="timeline">
+  <div class="tl-line" id="tlLine"></div>
+  <article class="milestone"><span class="dot"></span><div class="tl-caption">20XX 年 · 第一阶段</div><h3>示例阶段一：起步</h3><p>示例说明文字，介绍第一阶段做了什么、面向谁。</p></article>
+  <article class="milestone"><span class="dot"></span><div class="tl-caption">20XX 年 · 第二阶段</div><h3>示例阶段二：成长</h3><p>示例说明文字，介绍第二阶段做了什么、面向谁。</p></article>
+  <article class="milestone"><span class="dot"></span><div class="tl-caption">20XX 年 · 第三阶段</div><h3>示例阶段三：扩展</h3><p>示例说明文字，介绍第三阶段做了什么、面向谁。</p></article>
+  <article class="milestone"><span class="dot"></span><div class="tl-caption">20XX 年 · 第四阶段</div><h3>示例阶段四：今天</h3><p>示例说明文字，介绍第四阶段做了什么、面向谁。</p></article>
+</div></main>
+<section class="cta"><h2>想了解示例公司的更多信息？</h2><button class="btn" type="button">联系我们</button></section>
+<footer>示例公司 · 页脚占位文字</footer>
+<script>
+  var bar = document.getElementById('progressBar');
+  var pct = document.getElementById('progressPct');
+  var bg = document.getElementById('plxBg');
+  var mid = document.getElementById('plxMid');
+  var line = document.getElementById('tlLine');
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      bar.style.transform = 'scaleX(' + p + ')';
+      pct.textContent = Math.round(p * 100) + '%';
+      bg.style.transform = 'translateY(' + (window.scrollY * 0.2) + 'px)';
+      mid.style.transform = 'translateY(' + (window.scrollY * 0.5) + 'px)';
+      line.style.transform = 'scaleY(' + p + ')';
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('lit'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.milestone').forEach(function (el) { io.observe(el); });
+</script>
+</body>
+</html>

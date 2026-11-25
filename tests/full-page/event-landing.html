@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例活动 — 活动落地页测试页</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, sans-serif; color: #f5f5f0; background: #141414; line-height: 1.6; }
+p { font-size: 16px; }
+a { color: #ffd60a; text-decoration: none; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+section { padding: 80px 0; }
+
+.reveal { opacity: 0; transform: translateY(16px) scale(0.96); transition: opacity 200ms cubic-bezier(0.16,1,0.3,1), transform 200ms cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+/* 首屏 */
+.hero { padding: 120px 0 90px; text-align: center; position: relative; overflow: hidden; }
+.hero .ambient { position: absolute; width: 320px; height: 320px; border-radius: 50%; background: #ffd60a; opacity: 0.12; top: -80px; left: 8%; animation: drift 6000ms ease-in-out infinite alternate; pointer-events: none; }
+.hero .ambient.two { left: auto; right: 6%; top: auto; bottom: -100px; animation-delay: 1500ms; }
+@keyframes drift { from { transform: translate(0, 0); } to { transform: translate(30px, 24px); } }
+.hero .event-name { font-size: 18px; letter-spacing: 6px; color: #ffd60a; position: relative; }
+.hero h1 { font-size: 56px; font-weight: 800; margin: 16px 0; position: relative; }
+.hero .sub { font-size: 18px; color: #c9c9c2; position: relative; }
+.hero .date-row { margin-top: 20px; color: #c9c9c2; position: relative; }
+.btn { display: inline-block; padding: 14px 32px; border-radius: 16px; font-size: 16px; cursor: pointer; border: none; background: #ffd60a; color: #141414; font-weight: 700; margin-top: 28px; position: relative; }
+.btn:hover { opacity: 0.85; }
+
+.section-head { text-align: center; margin-bottom: 48px; }
+.section-head h2 { font-size: 34px; font-weight: 800; }
+.section-head p { color: #c9c9c2; margin-top: 8px; }
+
+/* 倒计时 */
+.countdown { display: flex; gap: 16px; justify-content: center; }
+.cd-cell { background: #1f1f1f; border: 1px solid #333333; border-radius: 16px; padding: 24px 0; width: 120px; text-align: center; }
+.cd-num { font-size: 44px; font-weight: 800; color: #ffd60a; transition: opacity 150ms cubic-bezier(0.16,1,0.3,1); }
+.cd-num.tick { opacity: 0.6; }
+.cd-label { font-size: 16px; color: #c9c9c2; }
+
+/* 阵容 */
+.lineup-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.guest-card { background: #1f1f1f; border: 1px solid #333333; border-radius: 16px; padding: 28px; transition: transform 200ms cubic-bezier(0.16,1,0.3,1); }
+.guest-card:hover { transform: translateY(-4px); }
+.guest-badge { display: inline-block; width: 44px; height: 44px; line-height: 44px; text-align: center; border-radius: 50%; background: #ffd60a; color: #141414; font-weight: 800; opacity: 0; transform: translateY(6px); transition: opacity 200ms cubic-bezier(0.16,1,0.3,1) 80ms, transform 200ms cubic-bezier(0.16,1,0.3,1) 80ms; }
+.reveal.visible .guest-badge { opacity: 1; transform: translateY(0); }
+.guest-card h3 { font-size: 22px; margin: 14px 0 8px; }
+.guest-card p { color: #c9c9c2; }
+
+/* 场地 */
+.venue { background: #1a1a1a; }
+.venue-info { max-width: 760px; margin: 0 auto; }
+.venue-info p { padding: 6px 0; color: #e8e8e0; }
+.venue-map { max-width: 760px; height: 200px; margin: 28px auto 0; border-radius: 16px; background: #262626; display: flex; align-items: center; justify-content: center; color: #c9c9c2; }
+
+/* 票价 */
+.ticket-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.ticket { background: #1f1f1f; border: 1px solid #333333; border-radius: 16px; padding: 28px; }
+.ticket.selected { border: 2px solid #ffd60a; }
+.ticket h3 { font-size: 20px; }
+.ticket .price { font-size: 34px; font-weight: 800; color: #ffd60a; margin: 12px 0; }
+.ticket ul { list-style: none; margin: 12px 0 20px; }
+.ticket li { font-size: 16px; color: #c9c9c2; padding: 3px 0; }
+.ticket button { width: 100%; padding: 12px; border-radius: 16px; border: none; background: #ffd60a; color: #141414; font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 200ms cubic-bezier(0.16,1,0.3,1); }
+.ticket button:hover { opacity: 0.85; }
+.pick-note { text-align: center; margin-top: 28px; font-size: 18px; color: #ffd60a; opacity: 0; transform: translateY(12px); transition: opacity 200ms cubic-bezier(0.16,1,0.3,1), transform 200ms cubic-bezier(0.16,1,0.3,1); }
+.pick-note.show { opacity: 1; transform: translateY(0); }
+
+/* 页脚 */
+footer { background: #0d0d0d; padding: 64px 0 32px; }
+.foot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+.foot-grid h4 { color: #f5f5f0; font-size: 16px; margin-bottom: 12px; }
+.foot-grid a { display: block; color: #c9c9c2; padding: 3px 0; }
+.foot-bottom { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid #262626; color: #c9c9c2; }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 36px; }
+  .lineup-grid, .ticket-grid, .foot-grid { grid-template-columns: 1fr; }
+  .countdown { gap: 8px; }
+  .cd-cell { width: 76px; padding: 16px 0; }
+  .cd-num { font-size: 28px; }
+  .hero { padding: 90px 0 64px; }
+  section { padding: 56px 0; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="ambient"></div>
+  <div class="ambient two"></div>
+  <div class="container">
+    <p class="event-name reveal" style="transition-delay:0ms">示例活动</p>
+    <h1 class="reveal" style="transition-delay:60ms">一起点燃这个夜晚</h1>
+    <p class="sub reveal" style="transition-delay:120ms">示例活动是一场示例主题的线下聚会，现场有演出、分享与互动。</p>
+    <a class="btn reveal" href="#tickets" style="transition-delay:180ms">立即选票</a>
+    <p class="date-row reveal" style="transition-delay:240ms">示例日期 · 示例城市</p>
+  </div>
+</header>
+
+<section id="countdown">
+  <div class="container">
+    <div class="section-head reveal"><h2>倒计时</h2><p>距离示例活动开始还有</p></div>
+    <div class="countdown reveal" style="transition-delay:60ms">
+      <div class="cd-cell"><div class="cd-num" id="cdDays">26</div><div class="cd-label">天</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cdHours">0</div><div class="cd-label">时</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cdMins">0</div><div class="cd-label">分</div></div>
+      <div class="cd-cell"><div class="cd-num" id="cdSecs">0</div><div class="cd-label">秒</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="lineup">
+  <div class="container">
+    <div class="section-head reveal"><h2>阵容</h2><p>四位示例嘉宾，轮番登场</p></div>
+    <div class="lineup-grid">
+      <div class="guest-card reveal" style="transition-delay:0ms"><span class="guest-badge">01</span><h3>示例嘉宾一</h3><p>示例介绍一句话。</p></div>
+      <div class="guest-card reveal" style="transition-delay:60ms"><span class="guest-badge">02</span><h3>示例嘉宾二</h3><p>示例介绍一句话。</p></div>
+      <div class="guest-card reveal" style="transition-delay:120ms"><span class="guest-badge">03</span><h3>示例嘉宾三</h3><p>示例介绍一句话。</p></div>
+      <div class="guest-card reveal" style="transition-delay:180ms"><span class="guest-badge">04</span><h3>示例嘉宾四</h3><p>示例介绍一句话。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="venue" id="venue">
+  <div class="container">
+    <div class="section-head reveal"><h2>场地</h2><p>示例场馆，交通便利</p></div>
+    <div class="venue-info reveal" style="transition-delay:60ms">
+      <p>场馆：示例场馆</p>
+      <p>地址：示例地址</p>
+      <p>交通：示例交通方式</p>
+    </div>
+    <div class="venue-map reveal" style="transition-delay:120ms">场地示意区（纯色块占位）</div>
+  </div>
+</section>
+
+<section id="tickets">
+  <div class="container">
+    <div class="section-head reveal"><h2>票价</h2><p>三档票价，按需选择</p></div>
+    <div class="ticket-grid">
+      <div class="ticket reveal" style="transition-delay:0ms" data-tier="示例票档一">
+        <h3>示例票档一</h3><div class="price">¥99 起</div>
+        <ul><li>入场权益示例一</li><li>入场权益示例二</li></ul>
+        <button type="button" aria-pressed="false">选择此档</button>
+      </div>
+      <div class="ticket reveal" style="transition-delay:60ms" data-tier="示例票档二">
+        <h3>示例票档二</h3><div class="price">¥199 起</div>
+        <ul><li>入场权益示例一</li><li>入场权益示例二</li></ul>
+        <button type="button" aria-pressed="false">选择此档</button>
+      </div>
+      <div class="ticket reveal" style="transition-delay:120ms" data-tier="示例票档三">
+        <h3>示例票档三</h3><div class="price">¥299 起</div>
+        <ul><li>入场权益示例一</li><li>入场权益示例二</li></ul>
+        <button type="button" aria-pressed="false">选择此档</button>
+      </div>
+    </div>
+    <p class="pick-note" id="pickNote"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="reveal" style="transition-delay:0ms"><h4>示例活动</h4><a href="#lineup">阵容</a><a href="#venue">场地</a><a href="#tickets">票价</a></div>
+      <div class="reveal" style="transition-delay:60ms"><h4>联系</h4><a href="#top">示例邮箱</a><a href="#top">示例客服</a><a href="#top">示例主办方</a></div>
+    </div>
+    <p class="foot-bottom">示例主办方 © 示例年份 版权所有</p>
+  </div>
+</footer>
+
+<script>
+var observer = new IntersectionObserver(function (entries) {
+  entries.forEach(function (entry) {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.reveal').forEach(function (el) { observer.observe(el); });
+
+var target = Date.now() + 26 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000;
+var cdDays = document.getElementById('cdDays');
+var cdHours = document.getElementById('cdHours');
+var cdMins = document.getElementById('cdMins');
+var cdSecs = document.getElementById('cdSecs');
+function pad(n) { return String(n); }
+function updateCountdown() {
+  var diff = target - Date.now();
+  var d = Math.floor(diff / 86400000);
+  var h = Math.floor(diff % 86400000 / 3600000);
+  var m = Math.floor(diff % 3600000 / 60000);
+  var s = Math.floor(diff % 60000 / 1000);
+  cdDays.textContent = pad(d);
+  cdHours.textContent = pad(h);
+  cdMins.textContent = pad(m);
+  cdSecs.textContent = pad(s);
+  cdSecs.classList.add('tick');
+  setTimeout(function () { cdSecs.classList.remove('tick'); }, 150);
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+var pickNote = document.getElementById('pickNote');
+document.querySelectorAll('.ticket button').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.querySelectorAll('.ticket').forEach(function (t) {
+      t.classList.remove('selected');
+      t.querySelector('button').textContent = '选择此档';
+      t.querySelector('button').setAttribute('aria-pressed', 'false');
+    });
+    var ticket = btn.closest('.ticket');
+    ticket.classList.add('selected');
+    btn.textContent = '已选择';
+    btn.setAttribute('aria-pressed', 'true');
+    pickNote.textContent = '已选择：' + ticket.getAttribute('data-tier');
+    pickNote.classList.add('show');
+  });
+});
+</script>
+</body>
+</html>

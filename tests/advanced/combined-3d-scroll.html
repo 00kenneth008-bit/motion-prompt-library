@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例产品 — 3D 翻转卡片随滚动揭示</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #111114; color: #F2F0EA; overflow-x: hidden; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  p { font-size: 17px; line-height: 1.7; color: #C9C7C0; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
+  .logo { font-size: 22px; font-weight: 800; color: #F2F0EA; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: #C9C7C0; text-decoration: none; font-size: 16px; }
+  .hero { position: relative; text-align: center; padding: 96px 24px 72px; }
+  .ambient { position: absolute; width: 120px; height: 120px; border-radius: 50%; border: 1px solid #3A3A40; pointer-events: none; animation: ambientFloat 6s ease-in-out infinite alternate; }
+  .ambient.a1 { top: 14%; right: 8%; }
+  .ambient.a2 { top: 55%; left: 5%; width: 80px; height: 80px; animation-delay: 2s; }
+  @keyframes ambientFloat { from { transform: translateY(0); } to { transform: translateY(-14px); } }
+  .kicker { font-size: 15px; letter-spacing: 4px; color: #D8C98A; font-weight: 600; }
+  .hero h1 { font-size: 48px; font-weight: 700; margin: 20px 0; }
+  .hero p { max-width: 600px; margin: 0 auto; }
+  .section { padding: 64px 0 80px; }
+  .section h2 { font-size: 34px; text-align: center; margin-bottom: 40px; }
+  .flip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; will-change: transform; }
+  .flip-wrap { opacity: 0; transform: translateY(20px); transition: opacity 300ms cubic-bezier(0.16,1,0.3,1), transform 300ms cubic-bezier(0.16,1,0.3,1); }
+  .flip-wrap:nth-child(1) { transition-delay: 120ms; }
+  .flip-wrap:nth-child(2) { transition-delay: 120ms; }
+  .flip-wrap:nth-child(3) { transition-delay: 200ms; }
+  .flip-grid.revealed .flip-wrap { opacity: 1; transform: translateY(0); }
+  .flip-card { display: block; perspective: 1000px; height: 320px; background: none; border: none; padding: 0; width: 100%; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+  .flip-card:disabled { cursor: default; }
+  .flip-inner { display: block; position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 500ms cubic-bezier(0.16,1,0.3,1); }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-face { position: absolute; inset: 0; backface-visibility: hidden; background: #1D1D21; border: 1px solid #33333A; border-radius: 12px; padding: 32px 24px; display: flex; flex-direction: column; justify-content: center; }
+  .flip-face.back { transform: rotateY(180deg); background: #232328; }
+  .flip-face h3 { font-size: 22px; margin-bottom: 12px; }
+  .flip-face ul { margin-top: 12px; padding-left: 20px; }
+  .flip-face li { font-size: 16px; color: #C9C7C0; line-height: 2; }
+  .flip-hint { margin-top: 16px; font-size: 15px; color: #D8C98A; }
+  .flip-shadow { height: 14px; margin-top: 12px; border-radius: 50%; background: rgba(0,0,0,0.45); opacity: 0; transform: scale(0.9); transition: opacity 300ms cubic-bezier(0.16,1,0.3,1), transform 300ms cubic-bezier(0.16,1,0.3,1); transition-delay: 100ms; }
+  .flip-grid.revealed .flip-shadow { opacity: 1; transform: scale(1); }
+  .flip-card.flipped + .flip-shadow { transform: scale(1.06); }
+  .btn { background: #F2F0EA; color: #111114; border: none; padding: 12px 28px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 300ms cubic-bezier(0.16,1,0.3,1); }
+  .btn:hover { opacity: 0.85; }
+  .cta { text-align: center; padding: 64px 24px 80px; }
+  .cta h2 { font-size: 32px; margin-bottom: 24px; }
+  footer { text-align: center; padding: 32px; color: #888; font-size: 16px; border-top: 1px solid #26262B; }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 34px; }
+    .flip-grid { grid-template-columns: 1fr; }
+    .nav-links a { display: none; }
+  }
+</style>
+</head>
+<body>
+<nav><div class="logo">示例公司</div><div class="nav-links"><a href="#">展示</a><a href="#">关于</a><a href="#">联系</a></div></nav>
+<header class="hero">
+  <div class="ambient a1"></div><div class="ambient a2"></div>
+  <div class="kicker">示例产品 · 展示</div>
+  <h1>翻开卡片，看到更多</h1>
+  <p>向下滚动，三张卡片依次浮现；点任意一张，翻到背面看更多说明。</p>
+</header>
+<section class="section"><div class="container">
+  <h2>三张示例卡片</h2>
+  <div class="flip-grid" id="flipGrid">
+    <div class="flip-wrap">
+      <button class="flip-card" type="button" aria-pressed="false" disabled>
+        <span class="flip-inner">
+          <span class="flip-face"><h3>示例卡片一</h3><p>示例说明文字，介绍第一张卡片的内容。</p><span class="flip-hint">点击翻转 →</span></span>
+          <span class="flip-face back"><h3>卡片一 · 背面</h3><ul><li>要点一：示例文字</li><li>要点二：示例文字</li><li>要点三：示例文字</li></ul></span>
+        </span>
+      </button>
+      <div class="flip-shadow"></div>
+    </div>
+    <div class="flip-wrap">
+      <button class="flip-card" type="button" aria-pressed="false" disabled>
+        <span class="flip-inner">
+          <span class="flip-face"><h3>示例卡片二</h3><p>示例说明文字，介绍第二张卡片的内容。</p><span class="flip-hint">点击翻转 →</span></span>
+          <span class="flip-face back"><h3>卡片二 · 背面</h3><ul><li>要点一：示例文字</li><li>要点二：示例文字</li><li>要点三：示例文字</li></ul></span>
+        </span>
+      </button>
+      <div class="flip-shadow"></div>
+    </div>
+    <div class="flip-wrap">
+      <button class="flip-card" type="button" aria-pressed="false" disabled>
+        <span class="flip-inner">
+          <span class="flip-face"><h3>示例卡片三</h3><p>示例说明文字，介绍第三张卡片的内容。</p><span class="flip-hint">点击翻转 →</span></span>
+          <span class="flip-face back"><h3>卡片三 · 背面</h3><ul><li>要点一：示例文字</li><li>要点二：示例文字</li><li>要点三：示例文字</li></ul></span>
+        </span>
+      </button>
+      <div class="flip-shadow"></div>
+    </div>
+  </div>
+</div></section>
+<section class="cta"><h2>想看全部示例卡片？</h2><button class="btn" type="button">查看全部</button></section>
+<footer>示例公司 · 页脚占位文字</footer>
+<script>
+  var grid = document.getElementById('flipGrid');
+  var flipping = false;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        grid.classList.add('revealed');
+        document.querySelectorAll('.flip-card').forEach(function (c) { c.disabled = false; });
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  io.observe(grid);
+  // 轻微视差：滚动量 × 0.08，翻转进行中暂停
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking || flipping) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      grid.style.transform = 'translateY(' + (window.scrollY * 0.08) + 'px)';
+      ticking = false;
+    });
+  }, { passive: true });
+  document.querySelectorAll('.flip-card').forEach(function (card) {
+    card.addEventListener('click', function () {
+      if (card.disabled || flipping) return;
+      flipping = true;
+      card.classList.toggle('flipped');
+      card.setAttribute('aria-pressed', card.classList.contains('flipped') ? 'true' : 'false');
+      setTimeout(function () { flipping = false; }, 500);
+    });
+  });
+</script>
+</body>
+</html>

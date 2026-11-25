@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例产品 — SaaS 落地页测试页</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, sans-serif; color: #1a2b4a; background: #ffffff; line-height: 1.6; }
+p { font-size: 16px; }
+a { color: #1a3a8a; text-decoration: none; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+html { scroll-behavior: smooth; }
+section { scroll-margin-top: 90px; }
+
+/* 导航 */
+.site-nav { position: fixed; top: 0; left: 0; right: 0; background: #ffffff; z-index: 100; }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; gap: 32px; }
+.logo { font-size: 20px; font-weight: 700; color: #1a2b4a; transition: transform 200ms cubic-bezier(0.2,0,0,1); }
+.site-nav.compact .logo { transform: scale(0.92); }
+.nav-links { display: flex; gap: 24px; margin-left: auto; }
+.nav-links a { font-size: 16px; }
+.nav-border { height: 1px; background: #d7dee8; opacity: 0; transition: opacity 300ms cubic-bezier(0.2,0,0,1); }
+.site-nav.compact .nav-border { opacity: 1; }
+.btn { display: inline-block; padding: 12px 24px; border-radius: 12px; font-size: 16px; cursor: pointer; border: none; }
+.btn-primary { background: #1a3a8a; color: #ffffff; }
+.btn-secondary { background: #eef1f6; color: #1a2b4a; }
+.btn:hover { opacity: 0.85; }
+
+/* 通用入场 */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 300ms cubic-bezier(0.2,0,0,1), transform 300ms cubic-bezier(0.2,0,0,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* 首屏 */
+.hero { padding: 160px 0 100px; text-align: center; position: relative; overflow: hidden; }
+.hero .ambient { position: absolute; inset: 0; background: #eef1f6; opacity: 0.97; animation: ambient 3000ms ease-in-out infinite alternate; pointer-events: none; }
+@keyframes ambient { from { opacity: 0.97; } to { opacity: 1; } }
+.hero h1 { font-size: 44px; font-weight: 700; position: relative; }
+.hero .sub { font-size: 18px; color: #4a5a75; margin: 16px 0 28px; position: relative; }
+.hero .cta-row { display: flex; gap: 16px; justify-content: center; position: relative; }
+.hero .stats { margin-top: 36px; color: #4a5a75; position: relative; }
+section { padding: 80px 0; }
+.section-head { text-align: center; margin-bottom: 48px; }
+.section-head h2 { font-size: 32px; font-weight: 700; }
+.section-head p { color: #4a5a75; margin-top: 8px; }
+
+/* 功能卡 */
+.features { background: #f6f8fb; }
+.feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.card { background: #ffffff; border: 1px solid #e3e8f0; border-radius: 12px; padding: 28px; transition: transform 300ms cubic-bezier(0.2,0,0,1); }
+.card:hover { transform: translateY(-4px); }
+.card-icon { display: inline-block; width: 40px; height: 40px; line-height: 40px; text-align: center; border-radius: 12px; background: #eef1f6; font-weight: 700; color: #1a3a8a; opacity: 0; transform: translateY(8px); transition: opacity 300ms cubic-bezier(0.2,0,0,1) 100ms, transform 300ms cubic-bezier(0.2,0,0,1) 100ms; }
+.card.visible .card-icon, .reveal.visible .card-icon { opacity: 1; transform: translateY(0); }
+.card h3 { font-size: 20px; margin: 14px 0 8px; }
+.card p { color: #4a5a75; }
+
+/* 定价 */
+.toggle-wrap { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 36px; }
+.toggle { position: relative; width: 64px; height: 32px; border-radius: 16px; background: #d7dee8; border: none; cursor: pointer; }
+.toggle-knob { position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #ffffff; transition: transform 300ms cubic-bezier(0.2,0,0,1); }
+.toggle[aria-pressed="true"] .toggle-knob { transform: translateX(28px); }
+.tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.tier { background: #ffffff; border: 1px solid #e3e8f0; border-radius: 12px; padding: 28px; position: relative; }
+.tier.recommended { border: 2px solid #1a3a8a; transform: translateY(-8px); }
+.tier.recommended.reveal.visible { transform: translateY(-8px); }
+.tier .badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #1a3a8a; color: #ffffff; font-size: 14px; padding: 2px 12px; border-radius: 12px; opacity: 0; transition: opacity 300ms cubic-bezier(0.2,0,0,1) 150ms; }
+.tier.recommended.visible .badge, .reveal.visible .badge { opacity: 1; }
+.tier h3 { font-size: 20px; }
+.price { font-size: 36px; font-weight: 700; margin: 12px 0 4px; transition: opacity 300ms cubic-bezier(0.2,0,0,1), transform 300ms cubic-bezier(0.2,0,0,1); }
+.price.swap { opacity: 0; transform: translateY(12px); }
+.tier-features { list-style: none; margin: 16px 0 24px; opacity: 0; transform: translateY(8px); transition: opacity 300ms cubic-bezier(0.2,0,0,1) 100ms, transform 300ms cubic-bezier(0.2,0,0,1) 100ms; }
+.reveal.visible .tier-features { opacity: 1; transform: translateY(0); }
+.tier-features li { font-size: 16px; padding: 4px 0; color: #4a5a75; }
+.pricing-note { text-align: center; color: #4a5a75; margin-top: 28px; }
+
+/* FAQ */
+.faq { background: #f6f8fb; }
+.faq-list { max-width: 760px; margin: 0 auto; }
+.faq-item { background: #ffffff; border: 1px solid #e3e8f0; border-radius: 12px; margin-bottom: 12px; }
+.faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background: none; border: none; font-size: 16px; font-weight: 600; cursor: pointer; text-align: left; }
+.faq-arrow { transition: transform 300ms cubic-bezier(0.2,0,0,1); }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 350ms cubic-bezier(0.2,0,0,1); }
+.faq-item.open .faq-a { grid-template-rows: 1fr; }
+.faq-a-inner { overflow: hidden; }
+.faq-a-inner p { padding: 0 20px 18px; color: #4a5a75; }
+.faq-answer-text { display: block; }
+
+/* 页脚 */
+footer { background: #1a2b4a; color: #c8d2e2; padding: 64px 0 32px; }
+.foot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.foot-grid h4 { color: #ffffff; font-size: 16px; margin-bottom: 12px; }
+.foot-grid a { display: block; color: #c8d2e2; padding: 3px 0; }
+.foot-bottom { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid #33456a; }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 32px; }
+  .feat-grid, .tier-grid, .foot-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .hero { padding: 120px 0 64px; }
+  section { padding: 56px 0; }
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" id="siteNav">
+  <div class="nav-inner">
+    <a class="logo" href="#top">示例产品</a>
+    <div class="nav-links">
+      <a href="#features">功能</a>
+      <a href="#pricing">定价</a>
+      <a href="#faq">常见问题</a>
+      <a href="#footer">联系</a>
+    </div>
+    <a class="btn btn-primary" href="#pricing">开始试用</a>
+  </div>
+  <div class="nav-border"></div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="ambient"></div>
+  <div class="container">
+    <h1 class="reveal" style="transition-delay:0ms">让团队协作更简单</h1>
+    <p class="sub reveal" style="transition-delay:80ms">示例产品是一款面向示例团队的协作工具，把任务、文档和沟通放在一处。</p>
+    <div class="cta-row reveal" style="transition-delay:160ms">
+      <a class="btn btn-primary" href="#pricing">开始试用</a>
+      <a class="btn btn-secondary" href="#features">查看功能</a>
+    </div>
+    <p class="stats reveal" style="transition-delay:240ms">示例数据：服务示例团队 · 示例行业适用</p>
+  </div>
+</header>
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-head reveal"><h2>功能一览</h2><p>六个核心功能，覆盖团队日常协作</p></div>
+    <div class="feat-grid">
+      <div class="card reveal" style="transition-delay:0ms"><span class="card-icon">01</span><h3>任务管理</h3><p>任务分配清晰可见</p></div>
+      <div class="card reveal" style="transition-delay:80ms"><span class="card-icon">02</span><h3>文档协作</h3><p>多人同时编辑文档</p></div>
+      <div class="card reveal" style="transition-delay:160ms"><span class="card-icon">03</span><h3>日程提醒</h3><p>重要节点自动提醒</p></div>
+      <div class="card reveal" style="transition-delay:240ms"><span class="card-icon">04</span><h3>数据看板</h3><p>进度数据一目了然</p></div>
+      <div class="card reveal" style="transition-delay:320ms"><span class="card-icon">05</span><h3>权限管理</h3><p>成员权限分级管控</p></div>
+      <div class="card reveal" style="transition-delay:400ms"><span class="card-icon">06</span><h3>消息通知</h3><p>更新消息及时送达</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-head reveal"><h2>定价方案</h2><p>按需选择，随时可以取消</p></div>
+    <div class="toggle-wrap reveal">
+      <span>月付</span>
+      <button class="toggle" id="billingToggle" aria-pressed="false" aria-label="切换月付年付"><span class="toggle-knob"></span></button>
+      <span>年付（省 20%）</span>
+    </div>
+    <div class="tier-grid">
+      <div class="tier reveal" style="transition-delay:0ms">
+        <h3>基础版</h3>
+        <div class="price">¥<span class="price-num" data-monthly="99" data-yearly="79">99</span>/月</div>
+        <p>适合示例小团队</p>
+        <ul class="tier-features"><li>任务管理</li><li>文档协作</li><li>示例成员数</li><li>基础支持</li><li>示例存储空间</li></ul>
+        <button class="btn btn-secondary">开始试用</button>
+      </div>
+      <div class="tier recommended reveal" style="transition-delay:120ms">
+        <span class="badge">推荐</span>
+        <h3>专业版</h3>
+        <div class="price">¥<span class="price-num" data-monthly="199" data-yearly="159">199</span>/月</div>
+        <p>适合示例成长团队</p>
+        <ul class="tier-features"><li>全部基础功能</li><li>数据看板</li><li>权限管理</li><li>优先支持</li><li>示例存储空间</li></ul>
+        <button class="btn btn-primary">开始试用</button>
+      </div>
+      <div class="tier reveal" style="transition-delay:240ms">
+        <h3>企业版</h3>
+        <div class="price">¥<span class="price-num" data-monthly="299" data-yearly="239">299</span>/月</div>
+        <p>适合示例大型团队</p>
+        <ul class="tier-features"><li>全部专业功能</li><li>专属支持</li><li>定制集成</li><li>安全审计</li><li>示例存储空间</li></ul>
+        <button class="btn btn-secondary">联系示例公司</button>
+      </div>
+    </div>
+    <p class="pricing-note">随时取消，无需信用卡</p>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="section-head reveal"><h2>常见问题</h2><p>使用前最常被问到的四个问题</p></div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>试用期是多久？</span><span class="faq-arrow">▾</span></button>
+        <div class="faq-a"><div class="faq-a-inner"><p><span class="faq-answer-text">示例试用期为示例天数，到期前会提醒。</span></p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>可以随时取消吗？</span><span class="faq-arrow">▾</span></button>
+        <div class="faq-a"><div class="faq-a-inner"><p><span class="faq-answer-text">可以随时取消，取消后当期结束前仍可使用。</span></p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>支持哪些示例平台？</span><span class="faq-arrow">▾</span></button>
+        <div class="faq-a"><div class="faq-a-inner"><p><span class="faq-answer-text">支持示例平台一与示例平台二，详情见示例文档。</span></p></div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>数据安全如何保障？</span><span class="faq-arrow">▾</span></button>
+        <div class="faq-a"><div class="faq-a-inner"><p><span class="faq-answer-text">示例安全措施说明，详情见示例文档。</span></p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div class="reveal" style="transition-delay:0ms"><h4>产品</h4><a href="#features">功能</a><a href="#pricing">定价</a><a href="#top">示例链接</a></div>
+      <div class="reveal" style="transition-delay:80ms"><h4>资源</h4><a href="#top">示例文档</a><a href="#top">示例指南</a><a href="#top">示例博客</a></div>
+      <div class="reveal" style="transition-delay:160ms"><h4>公司</h4><a href="#top">关于示例公司</a><a href="#top">加入我们</a><a href="#top">示例新闻</a></div>
+      <div class="reveal" style="transition-delay:240ms"><h4>联系</h4><a href="#top">示例邮箱</a><a href="#top">示例客服</a><a href="#top">示例地址</a></div>
+    </div>
+    <p class="foot-bottom">示例公司 © 示例年份 版权所有</p>
+  </div>
+</footer>
+
+<script>
+var observer = new IntersectionObserver(function (entries) {
+  entries.forEach(function (entry) {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.reveal').forEach(function (el) { observer.observe(el); });
+
+var ticking = false;
+function onScroll() {
+  if (ticking) { return; }
+  ticking = true;
+  requestAnimationFrame(function () {
+    document.getElementById('siteNav').classList.toggle('compact', window.scrollY > 40);
+    ticking = false;
+  });
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+
+var toggle = document.getElementById('billingToggle');
+toggle.addEventListener('click', function () {
+  var yearly = toggle.getAttribute('aria-pressed') !== 'true';
+  toggle.setAttribute('aria-pressed', yearly ? 'true' : 'false');
+  document.querySelectorAll('.price-num').forEach(function (num) {
+    var price = num.closest('.price');
+    price.classList.add('swap');
+    setTimeout(function () {
+      num.textContent = yearly ? num.getAttribute('data-yearly') : num.getAttribute('data-monthly');
+      price.classList.remove('swap');
+    }, 300);
+  });
+});
+
+document.querySelectorAll('.faq-q').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var item = btn.closest('.faq-item');
+    var wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(function (it) {
+      it.classList.remove('open');
+      it.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+    });
+    if (!wasOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+</script>
+</body>
+</html>

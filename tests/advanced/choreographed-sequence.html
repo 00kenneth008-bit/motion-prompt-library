@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例产品 — 三段编排长页</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #FAFAF8; color: #222; overflow-x: hidden; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  p { font-size: 17px; line-height: 1.7; color: #555; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
+  .logo { font-size: 22px; font-weight: 800; color: #1F3A8A; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: #444; text-decoration: none; font-size: 16px; }
+  .btn { background: #1F3A8A; color: #fff; border: none; padding: 12px 28px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+  .btn:hover { opacity: 0.85; }
+  .btn-ghost { background: transparent; color: #1F3A8A; border: 1px solid #1F3A8A; }
+  /* 环境层：漂浮图形 */
+  .ambient { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: #E8EDF9; pointer-events: none; animation: ambientFloat 6s ease-in-out infinite alternate; }
+  .ambient.a1 { top: 12%; right: 6%; }
+  .ambient.a2 { top: 55%; left: 4%; width: 80px; height: 80px; animation-delay: 2s; }
+  @keyframes ambientFloat { from { transform: translateY(0); } to { transform: translateY(-16px); } }
+  /* 首屏时间线入场 */
+  .hero { position: relative; text-align: center; padding: 96px 24px 72px; }
+  .hero .seq-kicker, .hero h1, .hero .hero-sub, .hero .hero-btns { opacity: 0; transform: translateY(24px); transition: opacity 600ms cubic-bezier(0.4,0,0.2,1), transform 600ms cubic-bezier(0.4,0,0.2,1); }
+  .hero.play .seq-kicker { opacity: 1; transform: translateY(0); transition-delay: 120ms; }
+  .hero.play h1 { opacity: 1; transform: translateY(0); transition-delay: 240ms; }
+  .hero.play .hero-sub { opacity: 1; transform: translateY(0); transition-delay: 360ms; }
+  .hero.play .hero-btns { opacity: 1; transform: translateY(0); transition-delay: 360ms; }
+  .seq-kicker { font-size: 16px; letter-spacing: 4px; color: #1F3A8A; font-weight: 600; }
+  .hero h1 { font-size: 52px; font-weight: 800; margin: 20px 0; }
+  .hero-sub { max-width: 640px; margin: 0 auto 32px; }
+  .hero-btns { display: flex; gap: 16px; justify-content: center; }
+  .timeline-dots { display: flex; gap: 12px; justify-content: center; margin-top: 56px; }
+  .timeline-dots span { width: 10px; height: 10px; border-radius: 50%; background: #D5DBE8; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1); }
+  .hero.play .timeline-dots span { background: #1F3A8A; }
+  .hero.play .timeline-dots span:nth-child(1) { transition-delay: 120ms; }
+  .hero.play .timeline-dots span:nth-child(2) { transition-delay: 240ms; }
+  .hero.play .timeline-dots span:nth-child(3) { transition-delay: 360ms; }
+  /* 区块 */
+  .section { padding: 72px 0; }
+  .seq-caption { font-size: 15px; letter-spacing: 3px; color: #1F3A8A; font-weight: 600; text-align: center; }
+  .section h2 { font-size: 36px; font-weight: 700; text-align: center; margin: 12px 0 40px; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .card { background: #fff; border: 1px solid #E8E8E8; border-radius: 12px; padding: 32px 24px; opacity: 0; transform: translateY(20px); transition: opacity 500ms cubic-bezier(0.4,0,0.2,1), transform 500ms cubic-bezier(0.4,0,0.2,1); }
+  .card h3 { font-size: 20px; margin-bottom: 12px; }
+  .reveal.visible .card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 120ms; }
+  .reveal.visible .card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 240ms; }
+  .reveal.visible .card:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 360ms; }
+  .reveal.visible .seq-caption { opacity: 1; transform: translateY(0); }
+  .reveal .seq-caption { opacity: 0; transform: translateY(8px); transition: opacity 500ms cubic-bezier(0.4,0,0.2,1), transform 500ms cubic-bezier(0.4,0,0.2,1); transition-delay: 100ms; }
+  /* 展示区块切换 */
+  .tabs { display: flex; gap: 12px; justify-content: center; margin-bottom: 32px; }
+  .tab-btn { background: #fff; border: 1px solid #DDD; padding: 10px 24px; border-radius: 999px; font-size: 16px; cursor: pointer; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+  .tab-btn[aria-pressed="true"] { color: #1F3A8A; border-color: #1F3A8A; box-shadow: 0 2px 0 #1F3A8A; }
+  .panel { display: none; background: #fff; border: 1px solid #E8E8E8; border-radius: 12px; padding: 40px; max-width: 760px; margin: 0 auto; opacity: 0; transform: translateY(12px); transition: opacity 500ms cubic-bezier(0.4,0,0.2,1), transform 500ms cubic-bezier(0.4,0,0.2,1); }
+  .panel.active { display: block; opacity: 1; transform: translateY(0); }
+  .panel.fading { display: block; opacity: 0; transform: translateY(12px); transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1); }
+  .panel h3 { font-size: 24px; margin-bottom: 12px; }
+  .panel ul { margin-top: 16px; padding-left: 20px; }
+  .panel li { font-size: 16px; color: #555; line-height: 2; }
+  .cta { text-align: center; padding: 72px 24px; }
+  .cta h2 { font-size: 36px; margin-bottom: 24px; }
+  footer { text-align: center; padding: 32px; color: #888; font-size: 16px; border-top: 1px solid #EEE; }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .cards { grid-template-columns: 1fr; }
+    .nav-links a { display: none; }
+    .tabs { overflow-x: auto; justify-content: flex-start; }
+    .panel { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+<nav><div class="logo">示例公司</div><div class="nav-links"><a href="#">特性</a><a href="#">展示</a><a href="#">关于</a><button class="btn" type="button">了解更多</button></div></nav>
+<header class="hero" id="hero">
+  <div class="ambient a1"></div><div class="ambient a2"></div>
+  <div class="seq-kicker">示例产品 · 品牌长页</div>
+  <h1>把复杂的事做简单</h1>
+  <p class="hero-sub">示例产品帮助示例团队用更少步骤完成日常工作，界面清晰，上手快速。</p>
+  <div class="hero-btns"><button class="btn" type="button">了解更多</button><button class="btn btn-ghost" type="button">看看特性</button></div>
+  <div class="timeline-dots"><span></span><span></span><span></span></div>
+</header>
+<section class="section reveal" data-act="features"><div class="container">
+  <div class="seq-caption">三大特性</div><h2>为日常工作而设计</h2>
+  <div class="cards">
+    <div class="card"><h3>示例特性一</h3><p>示例说明文字，描述第一个特性的用途与适用场景。</p></div>
+    <div class="card"><h3>示例特性二</h3><p>示例说明文字，描述第二个特性的用途与适用场景。</p></div>
+    <div class="card"><h3>示例特性三</h3><p>示例说明文字，描述第三个特性的用途与适用场景。</p></div>
+  </div>
+</div></section>
+<section class="section reveal" data-act="showcase"><div class="container">
+  <div class="seq-caption">内容展示</div><h2>三种用法，随你切换</h2>
+  <div class="tabs" role="group" aria-label="展示切换">
+    <button class="tab-btn" type="button" data-panel="panel1" aria-pressed="true">用法一</button>
+    <button class="tab-btn" type="button" data-panel="panel2" aria-pressed="false">用法二</button>
+    <button class="tab-btn" type="button" data-panel="panel3" aria-pressed="false">用法三</button>
+  </div>
+  <div class="panel active" id="panel1" data-act="panel1"><h3>用法一：示例场景</h3><p>示例说明文字，介绍第一种用法适合谁、在什么场景下使用。</p><ul><li>要点一：示例文字</li><li>要点二：示例文字</li><li>要点三：示例文字</li></ul></div>
+  <div class="panel" id="panel2" data-act="panel2"><h3>用法二：示例场景</h3><p>示例说明文字，介绍第二种用法适合谁、在什么场景下使用。</p><ul><li>要点一：示例文字</li><li>要点二：示例文字</li><li>要点三：示例文字</li></ul></div>
+  <div class="panel" id="panel3" data-act="panel3"><h3>用法三：示例场景</h3><p>示例说明文字，介绍第三种用法适合谁、在什么场景下使用。</p><ul><li>要点一：示例文字</li><li>要点二：示例文字</li><li>要点三：示例文字</li></ul></div>
+</div></section>
+<section class="cta"><h2>现在开始了解示例产品</h2><button class="btn" type="button">了解更多</button></section>
+<footer>示例公司 · 页脚占位文字</footer>
+<script>
+  window.addEventListener('load', function () {
+    document.getElementById('hero').classList.add('play');
+  });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var current = document.querySelector('.panel.active');
+      var next = document.getElementById(btn.getAttribute('data-panel'));
+      if (current === next) return;
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+      btn.setAttribute('aria-pressed', 'true');
+      current.classList.remove('active');
+      current.classList.add('fading');
+      setTimeout(function () {
+        current.classList.remove('fading');
+        next.classList.add('active');
+      }, 400);
+    });
+  });
+</script>
+</body>
+</html>

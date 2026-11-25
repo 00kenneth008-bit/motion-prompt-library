@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例品牌 — 品牌落地页测试页</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, sans-serif; color: #2b2b2b; background: #faf7f2; line-height: 1.7; }
+p { font-size: 16px; }
+a { color: #2b2b2b; text-decoration: none; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+section { padding: 90px 0; }
+
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 600ms cubic-bezier(0.4,0,0.2,1), transform 600ms cubic-bezier(0.4,0,0.2,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* 首屏 */
+.hero { padding: 120px 0 100px; text-align: center; position: relative; overflow: hidden; }
+.hero .ambient { position: absolute; inset: 0; background: #f0e9dd; opacity: 0.97; animation: ambient 3000ms ease-in-out infinite alternate; pointer-events: none; }
+@keyframes ambient { from { opacity: 0.97; } to { opacity: 1; } }
+.hero .brand { font-size: 18px; letter-spacing: 6px; position: relative; }
+.hero h1 { font-size: 52px; font-weight: 500; letter-spacing: 2px; margin: 20px 0 16px; position: relative; }
+.hero .sub { font-size: 18px; color: #6b655c; position: relative; }
+.hero .btn { margin-top: 32px; position: relative; }
+.hero-visual { margin: 48px auto 0; max-width: 760px; height: 280px; border-radius: 12px; background: #e6ddcf; position: relative; display: flex; align-items: center; justify-content: center; color: #6b655c; }
+.btn { display: inline-block; padding: 14px 32px; border-radius: 12px; font-size: 16px; cursor: pointer; border: none; background: #2b2b2b; color: #faf7f2; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+.btn:hover { opacity: 0.85; }
+
+.section-head { text-align: center; margin-bottom: 56px; }
+.section-head h2 { font-size: 34px; font-weight: 500; letter-spacing: 2px; }
+.section-head p { color: #6b655c; margin-top: 8px; }
+
+/* 故事 */
+.story-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.step { background: #ffffff; border-radius: 12px; padding: 32px; }
+.step-year { display: block; font-size: 14px; letter-spacing: 3px; color: #8a8378; opacity: 0; transform: translateY(6px); transition: opacity 500ms cubic-bezier(0.4,0,0.2,1) 150ms, transform 500ms cubic-bezier(0.4,0,0.2,1) 150ms; }
+.reveal.visible .step-year { opacity: 1; transform: translateY(0); }
+.step h3 { font-size: 20px; font-weight: 500; margin: 10px 0 8px; }
+.step p { color: #6b655c; }
+
+/* 产品 */
+.product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.product-card { background: #ffffff; border-radius: 12px; padding: 24px; position: relative; }
+.product-card.featured { border: 2px solid #2b2b2b; transform: translateY(-8px); }
+.product-card.featured.reveal.visible { transform: translateY(-8px); }
+.card-media { height: 160px; border-radius: 12px; background: #e6ddcf; display: flex; align-items: center; justify-content: center; color: #6b655c; transition: transform 500ms cubic-bezier(0.4,0,0.2,1); }
+.product-card:hover .card-media { transform: scale(1.03); }
+.product-card h3 { font-size: 20px; font-weight: 500; margin: 16px 0 8px; }
+.product-card p { color: #6b655c; }
+.product-card a { display: inline-block; margin-top: 12px; font-size: 16px; border-bottom: 1px solid #2b2b2b; }
+
+/* 评价轮播 */
+.testimonials { background: #ffffff; }
+.carousel { max-width: 760px; margin: 0 auto; text-align: center; }
+.quote { font-size: 24px; font-weight: 400; line-height: 1.6; min-height: 120px; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1); }
+.quote.swap { opacity: 0; transform: translateY(12px); }
+.quote-author { color: #6b655c; margin-top: 16px; }
+.carousel-nav { display: flex; gap: 16px; justify-content: center; margin-top: 28px; }
+.carousel-nav button { padding: 10px 20px; border-radius: 12px; border: 1px solid #2b2b2b; background: #ffffff; font-size: 16px; cursor: pointer; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+.carousel-nav button:hover { opacity: 0.85; }
+
+/* 页脚 */
+footer { background: #2b2b2b; color: #c9c2b6; padding: 64px 0 32px; }
+.foot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+.foot-grid h4 { color: #faf7f2; font-size: 16px; margin-bottom: 12px; }
+.foot-grid a { display: block; color: #c9c2b6; padding: 3px 0; }
+.foot-bottom { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid #4a4a4a; }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 34px; }
+  .story-steps, .product-grid, .foot-grid { grid-template-columns: 1fr; }
+  .hero { padding: 80px 0 64px; }
+  section { padding: 56px 0; }
+  .quote { font-size: 20px; min-height: 150px; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="ambient"></div>
+  <div class="container">
+    <p class="brand reveal" style="transition-delay:0ms">示例品牌</p>
+    <h1 class="reveal" style="transition-delay:120ms">把日常过成值得纪念的样子</h1>
+    <p class="sub reveal" style="transition-delay:240ms">示例品牌专注于示例产品，用心做好每一件小事。</p>
+    <a class="btn reveal" href="#story" style="transition-delay:360ms">了解更多</a>
+    <div class="hero-visual reveal" style="transition-delay:480ms">示意区（纯色块占位）</div>
+  </div>
+</header>
+
+<section id="story">
+  <div class="container">
+    <div class="section-head reveal"><h2>我们的故事</h2><p>三步走来，始终如一</p></div>
+    <div class="story-steps">
+      <div class="step reveal" style="transition-delay:0ms"><span class="step-year">第一步</span><h3>从一个想法开始</h3><p>示例品牌诞生于一个简单的想法。</p></div>
+      <div class="step reveal" style="transition-delay:120ms"><span class="step-year">第二步</span><h3>做出第一件产品</h3><p>第一件示例产品凝聚了团队的心血。</p></div>
+      <div class="step reveal" style="transition-delay:240ms"><span class="step-year">第三步</span><h3>走向更多人</h3><p>示例产品开始走进更多人的生活。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="products">
+  <div class="container">
+    <div class="section-head reveal"><h2>代表产品</h2><p>三件产品，各有性格</p></div>
+    <div class="product-grid">
+      <div class="product-card reveal" style="transition-delay:0ms"><div class="card-media">示意区</div><h3>示例产品一</h3><p>简洁实用，适合日常使用。</p><a href="#products">查看详情</a></div>
+      <div class="product-card featured reveal" style="transition-delay:120ms"><div class="card-media">示意区</div><h3>示例产品二</h3><p>代表之作，最受示例用户喜爱。</p><a href="#products">查看详情</a></div>
+      <div class="product-card reveal" style="transition-delay:240ms"><div class="card-media">示意区</div><h3>示例产品三</h3><p>温润细腻，适合慢慢品味。</p><a href="#products">查看详情</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials" id="reviews">
+  <div class="container">
+    <div class="section-head reveal"><h2>他们这样说</h2><p>来自示例评价人的声音</p></div>
+    <div class="carousel reveal" data-index="0">
+      <p class="quote" id="quoteText">示例产品二用起来很顺手，细节做得很到位。</p>
+      <p class="quote-author" id="quoteAuthor">— 示例评价人一</p>
+      <div class="carousel-nav">
+        <button id="prevBtn" type="button">上一条</button>
+        <button id="nextBtn" type="button">下一条</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="reveal" style="transition-delay:0ms"><h4>示例品牌</h4><a href="#story">我们的故事</a><a href="#products">代表产品</a><a href="#reviews">用户评价</a></div>
+      <div class="reveal" style="transition-delay:120ms"><h4>联系</h4><a href="#top">示例邮箱</a><a href="#top">示例地址</a><a href="#top">示例客服</a></div>
+    </div>
+    <p class="foot-bottom">示例品牌 © 示例年份 版权所有</p>
+  </div>
+</footer>
+
+<script>
+var quotes = [
+  { text: '示例产品二用起来很顺手，细节做得很到位。', author: '— 示例评价人一' },
+  { text: '示例品牌的故事很打动人，产品也对得起这份用心。', author: '— 示例评价人二' },
+  { text: '收到示例产品三的那一刻，就知道选对了。', author: '— 示例评价人三' }
+];
+var observer = new IntersectionObserver(function (entries) {
+  entries.forEach(function (entry) {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.reveal').forEach(function (el) { observer.observe(el); });
+
+var carousel = document.querySelector('.carousel');
+var quoteText = document.getElementById('quoteText');
+var quoteAuthor = document.getElementById('quoteAuthor');
+function showQuote(index) {
+  quoteText.classList.add('swap');
+  setTimeout(function () {
+    quoteText.textContent = quotes[index].text;
+    quoteAuthor.textContent = quotes[index].author;
+    carousel.setAttribute('data-index', String(index));
+    quoteText.classList.remove('swap');
+  }, 400);
+}
+document.getElementById('nextBtn').addEventListener('click', function () {
+  var i = (parseInt(carousel.getAttribute('data-index'), 10) + 1) % quotes.length;
+  showQuote(i);
+});
+document.getElementById('prevBtn').addEventListener('click', function () {
+  var i = (parseInt(carousel.getAttribute('data-index'), 10) - 1 + quotes.length) % quotes.length;
+  showQuote(i);
+});
+</script>
+</body>
+</html>
