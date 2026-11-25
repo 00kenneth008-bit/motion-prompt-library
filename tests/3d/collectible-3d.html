@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月影守护者 — 限量手办</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0B0B0F; color: #F5F1E8; min-height: 100vh; overflow-x: hidden; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  /* 环境层：背景星尘呼吸 */
+  .ambient { position: fixed; inset: 0; background: radial-gradient(circle at 30% 80%, rgba(245,241,232,0.05), transparent 50%), radial-gradient(circle at 80% 15%, rgba(245,241,232,0.04), transparent 45%); animation: stardust 3s ease-in-out infinite; pointer-events: none; z-index: 0; }
+  @keyframes stardust { 0%, 100% { opacity: 0.95; } 50% { opacity: 1; } }
+  /* 导航 */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .logo { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: #B8B4A8; text-decoration: none; font-size: 16px; }
+  /* 首屏 */
+  .hero { text-align: center; padding: 40px 0 16px; }
+  .hero h1 { font-size: 46px; font-weight: 600; letter-spacing: 6px; }
+  .hero p { font-size: 18px; color: #B8B4A8; margin: 16px 0 28px; }
+  .btn-primary { background: #F5F1E8; color: #0B0B0F; border: none; padding: 14px 36px; border-radius: 999px; font-size: 17px; font-weight: 600; cursor: pointer; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+  .btn-primary:hover { opacity: 0.85; }
+  /* 收藏品主视觉：三层视差 */
+  .showcase { position: relative; height: 460px; margin: 24px 0 8px; perspective: 1000px; display: flex; align-items: center; justify-content: center; }
+  .layer { position: absolute; will-change: transform; transition: transform 500ms cubic-bezier(0.4,0,0.2,1); }
+  .layer-bg { width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, rgba(245,241,232,0.10), transparent 65%); }
+  .layer-ring { width: 360px; height: 360px; border-radius: 50%; border: 1px solid rgba(245,241,232,0.25); display: flex; align-items: center; justify-content: center; }
+  .layer-ring::before { content: ""; width: 300px; height: 300px; border-radius: 50%; border: 1px dashed rgba(245,241,232,0.18); }
+  .layer-figure { position: relative; font-size: 240px; line-height: 1; cursor: pointer; transition: transform 500ms cubic-bezier(0.4,0,0.2,1); transform-style: preserve-3d; }
+  .layer-figure .fig-glow { position: absolute; inset: -60px; border-radius: 50%; background: radial-gradient(circle, rgba(245,241,232,0.35), transparent 65%); opacity: 0; transition: opacity 500ms cubic-bezier(0.4,0,0.2,1); pointer-events: none; z-index: -1; }
+  .layer-figure.lit { transform: scale(1.03); }
+  .layer-figure.lit .fig-glow { opacity: 1; }
+  /* 入场：径向弹出 250ms ease-out-expo */
+  @keyframes popOut { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+  .anim-title { animation: fadeUp 500ms cubic-bezier(0.4,0,0.2,1) both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .anim-show { animation: popOut 250ms cubic-bezier(0.16,1,0.3,1) 100ms both; }
+  /* 收藏数据 */
+  .stats { display: flex; justify-content: center; gap: 64px; padding: 28px 0 48px; text-align: center; }
+  .stat b { display: block; font-size: 26px; font-weight: 600; }
+  .stat span { font-size: 15px; color: #8A867C; }
+  @media (max-width: 768px) {
+    .showcase { height: 340px; }
+    .layer-bg { width: 340px; height: 340px; }
+    .layer-ring { width: 250px; height: 250px; }
+    .layer-ring::before { width: 200px; height: 200px; }
+    .layer-figure { font-size: 160px; }
+    .hero h1 { font-size: 32px; }
+    .hero p { font-size: 16px; }
+    .nav-links { display: none; }
+    .stats { gap: 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="container">
+  <nav>
+    <div class="logo">月影 MOONSHADE</div>
+    <div class="nav-links">
+      <a href="#">系列</a>
+      <a href="#">工艺</a>
+      <a href="#">收藏</a>
+      <a href="#">关于</a>
+    </div>
+  </nav>
+  <section class="hero">
+    <h1 class="anim-title">月影守护者</h1>
+    <p class="anim-title">全球限量 500 体，每一体都有独立编号。</p>
+    <button class="btn-primary">查看详情</button>
+  </section>
+  <div class="showcase" id="showcase">
+    <div class="layer layer-bg" id="layerBg"></div>
+    <div class="layer layer-ring" id="layerRing"></div>
+    <div class="layer layer-figure" id="figure" role="button" tabindex="0" aria-label="月影守护者手办，点击点亮"><span class="fig-glow"></span>🌙</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>No. 128</b><span>独立编号</span></div>
+    <div class="stat"><b>500 体</b><span>全球限量</span></div>
+    <div class="stat"><b>树脂 × 合金</b><span>材质</span></div>
+  </div>
+</div>
+<script>
+(function () {
+  var stage = document.getElementById('showcase');
+  var bg = document.getElementById('layerBg');
+  var ring = document.getElementById('layerRing');
+  var fig = document.getElementById('figure');
+  var raf = null, tx = 0, ty = 0;
+  function render() {
+    raf = null;
+    // 三层视差：前景 100% / 中间 50% / 背景 20%，倾斜最大 10°
+    fig.style.transform = 'rotateY(' + (tx * 10).toFixed(2) + 'deg) rotateX(' + (-ty * 10).toFixed(2) + 'deg)';
+    ring.style.transform = 'translate(' + (tx * 18).toFixed(1) + 'px,' + (ty * 18).toFixed(1) + 'px) rotate(' + (tx * 6).toFixed(2) + 'deg)';
+    bg.style.transform = 'translate(' + (tx * 8).toFixed(1) + 'px,' + (ty * 8).toFixed(1) + 'px)';
+  }
+  function onMove(clientX, clientY) {
+    var r = stage.getBoundingClientRect();
+    tx = (clientX - r.left) / r.width - 0.5;
+    ty = (clientY - r.top) / r.height - 0.5;
+    if (!raf) raf = requestAnimationFrame(render);
+  }
+  stage.addEventListener('pointermove', function (e) { onMove(e.clientX, e.clientY); });
+  stage.addEventListener('pointerleave', function () {
+    tx = 0; ty = 0;
+    if (!raf) raf = requestAnimationFrame(render);
+  });
+  // 点击点亮 / 恢复
+  function toggleLit() { fig.classList.toggle('lit'); }
+  fig.addEventListener('click', toggleLit);
+  fig.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleLit(); } });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例产品 — 加载器组件</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F7F8FA; color: #222; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .page-head { text-align: center; padding: 64px 0 40px; }
+  .page-head h1 { font-size: 32px; font-weight: 700; }
+  .page-head p { font-size: 17px; color: #666; margin-top: 12px; }
+  .loaders { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding-bottom: 80px; }
+  .loader-card { background: #fff; border: 1px solid #E8E8E8; border-radius: 8px; padding: 28px; opacity: 0; animation: cardIn 400ms cubic-bezier(0.2,0,0,1) forwards; }
+  .loader-card:nth-child(2) { animation-delay: 100ms; }
+  .loader-card:nth-child(3) { animation-delay: 200ms; }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .loader-type { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .loader-scene { font-size: 16px; color: #666; margin-bottom: 20px; }
+  .demo-area { min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: #F7F8FA; border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+  /* 骨架屏：占位块透明度 0.6→1 循环呼吸，正弦 ease-in-out 1200ms */
+  .skeleton-block { width: 100%; height: 18px; border-radius: 4px; background: #D9D9D9; animation: pulse 1200ms ease-in-out infinite; }
+  .skeleton-block.short { width: 60%; }
+  .skeleton-block.tall { height: 54px; }
+  @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+  /* 转圈：800ms 一圈，linear 匀速（铁律允许的例外） */
+  .spinner { width: 44px; height: 44px; border-radius: 50%; border: 4px solid #E8E8E8; border-top-color: #1677FF; animation: spin 800ms linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 16px; color: #666; }
+  /* 进度条：填充用 scaleX，左端为原点，2000ms */
+  .progress-track { width: 100%; height: 8px; background: #E8E8E8; border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #1677FF; transform-origin: left; transform: scaleX(0); transition: transform 2000ms cubic-bezier(0.2,0,0,1); }
+  .progress-fill.done { transform: scaleX(1); }
+  .progress-num { font-size: 16px; color: #222; font-weight: 700; }
+  .progress-done { font-size: 16px; color: #1677FF; font-weight: 700; display: none; }
+  .progress-done.show { display: block; }
+  .replay-btn { width: 100%; padding: 11px 0; border-radius: 8px; font-size: 16px; cursor: pointer; border: 1px solid #1677FF; background: #fff; color: #1677FF; transition: background-color 200ms cubic-bezier(0.2,0,0,1); }
+  .replay-btn:hover { background-color: #EAF3FF; }
+  @media (max-width: 768px) {
+    .loaders { grid-template-columns: 1fr; }
+    .page-head h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="page-head">
+    <h1>加载器组件</h1>
+    <p>骨架屏、转圈、进度条，三种加载态分别用在不同场景，逐个看看。</p>
+  </div>
+  <div class="loaders">
+    <div class="loader-card">
+      <div class="loader-type">骨架屏</div>
+      <p class="loader-scene">页面结构已知、内容未到时用它，先占位置再填内容。</p>
+      <div class="demo-area" id="skeletonDemo">
+        <div class="skeleton-block tall"></div>
+        <div class="skeleton-block"></div>
+        <div class="skeleton-block short"></div>
+      </div>
+      <button class="replay-btn" data-replay="skeleton">重新播放</button>
+    </div>
+    <div class="loader-card">
+      <div class="loader-type">转圈</div>
+      <p class="loader-scene">不知道要等多久时用它，转着表示还在工作。</p>
+      <div class="demo-area">
+        <div class="spinner" id="spinnerEl"></div>
+        <div class="loading-text">加载中…</div>
+      </div>
+      <button class="replay-btn" data-replay="spinner">重新播放</button>
+    </div>
+    <div class="loader-card">
+      <div class="loader-type">进度条</div>
+      <p class="loader-scene">知道进度时用它，百分比走到 100% 就是完成。</p>
+      <div class="demo-area">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-num" id="progressNum">0%</div>
+        <div class="progress-done" id="progressDone">✓ 加载完成</div>
+      </div>
+      <button class="replay-btn" data-replay="progress">重新播放</button>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  // 进度条：scaleX 0→1，2000ms，百分比数字同步更新
+  var fill = document.getElementById('progressFill');
+  var num = document.getElementById('progressNum');
+  var done = document.getElementById('progressDone');
+  var rafId = null;
+  function runProgress() {
+    if (rafId) { cancelAnimationFrame(rafId); }
+    fill.classList.remove('done');
+    done.classList.remove('show');
+    num.textContent = '0%';
+    void fill.offsetWidth;
+    var start = null;
+    function step(ts) {
+      if (!start) { start = ts; }
+      var p = Math.min((ts - start) / 2000, 1);
+      num.textContent = Math.round(p * 100) + '%';
+      if (p < 1) { rafId = requestAnimationFrame(step); }
+      else { done.classList.add('show'); }
+    }
+    fill.classList.add('done');
+    rafId = requestAnimationFrame(step);
+  }
+  runProgress();
+  // 重新播放：只影响当前卡
+  document.querySelectorAll('.replay-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var kind = btn.getAttribute('data-replay');
+      if (kind === 'progress') { runProgress(); }
+      else if (kind === 'spinner') {
+        var sp = document.getElementById('spinnerEl');
+        sp.style.animation = 'none';
+        void sp.offsetWidth;
+        sp.style.animation = '';
+      } else if (kind === 'skeleton') {
+        var demo = document.getElementById('skeletonDemo');
+        demo.querySelectorAll('.skeleton-block').forEach(function (b) {
+          b.style.animation = 'none';
+          void b.offsetWidth;
+          b.style.animation = '';
+        });
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

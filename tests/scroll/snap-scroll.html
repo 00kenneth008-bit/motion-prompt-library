@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星浪音乐节 — STARWAVE 2026</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0B0B0F; color: #fff; overflow-x: hidden; }
+  /* 全屏吸附 */
+  .snap-wrap { scroll-snap-type: y mandatory; overflow-y: auto; height: 100vh; }
+  .snap-section { scroll-snap-align: start; height: 100vh; min-height: 640px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 24px; position: relative; transition: background-color 250ms cubic-bezier(0.16,1,0.3,1); }
+  .s1 { background: #14141C; }
+  .s2 { background: #2B0F1E; }
+  .s3 { background: #0F1E2B; }
+  .s4 { background: #1E2B0F; }
+  .snap-section h1 { font-size: 56px; font-weight: 800; letter-spacing: 2px; }
+  .snap-section h1 .accent-s1 { color: #FFE14D; }
+  .snap-section h1 .accent-s2 { color: #FF4D6D; }
+  .snap-section h1 .accent-s3 { color: #4DB8FF; }
+  .snap-section h1 .accent-s4 { color: #7DFF5E; }
+  .snap-section p { font-size: 19px; color: rgba(255,255,255,0.75); margin: 18px 0 28px; }
+  .snap-section .visual { font-size: 88px; line-height: 1; }
+  .snap-section .tag { font-size: 15px; letter-spacing: 4px; color: rgba(255,255,255,0.55); margin-bottom: 16px; }
+  .btn-stage { background: #FFE14D; color: #14141C; border: none; padding: 15px 40px; border-radius: 4px; font-size: 18px; font-weight: 800; cursor: pointer; transition: transform 200ms cubic-bezier(0.16,1,0.3,1); margin-top: 28px; }
+  .btn-stage:hover { transform: scale(1.08); }
+  .btn-stage:active { transform: scale(0.95); }
+  .btn-ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.6); padding: 13px 32px; border-radius: 4px; font-size: 17px; font-weight: 700; cursor: pointer; transition: transform 200ms cubic-bezier(0.16,1,0.3,1); margin-top: 28px; }
+  .btn-ghost:hover { transform: scale(1.08); }
+  /* 次要层：装饰图形 */
+  .deco { position: absolute; font-size: 40px; opacity: 0.8; }
+  .deco.d1 { top: 18%; left: 12%; }
+  .deco.d2 { bottom: 22%; right: 14%; }
+  /* 环境层：底部音浪 */
+  .wave { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; align-items: flex-end; height: 28px; }
+  .wave i { display: block; width: 5px; background: rgba(255,255,255,0.65); border-radius: 3px; animation: wave 600ms ease-in-out infinite alternate; }
+  .wave i:nth-child(1) { height: 12px; }
+  .wave i:nth-child(2) { height: 22px; animation-delay: 120ms; }
+  .wave i:nth-child(3) { height: 28px; animation-delay: 240ms; }
+  .wave i:nth-child(4) { height: 18px; animation-delay: 360ms; }
+  .wave i:nth-child(5) { height: 10px; animation-delay: 480ms; }
+  @keyframes wave { from { transform: scaleY(0.4); } to { transform: scaleY(1); } }
+  /* 分段进入：标题 expo 弹出 200ms，超调 20% */
+  @keyframes popExpo { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+  .snap-section.active h1 { animation: popExpo 200ms cubic-bezier(0.16,1,0.3,1) both; }
+  .snap-section.active p { animation: popExpo 200ms cubic-bezier(0.16,1,0.3,1) 60ms both; }
+  .snap-section.active .visual { animation: popExpo 200ms cubic-bezier(0.16,1,0.3,1) 120ms both; }
+  .snap-section.active .deco { animation: popExpo 200ms cubic-bezier(0.16,1,0.3,1) 50ms both; }
+  /* 圆点导航 */
+  .dots { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 14px; z-index: 10; }
+  .dots button { width: 12px; height: 12px; border-radius: 50%; border: none; background: rgba(255,255,255,0.35); cursor: pointer; padding: 0; transition: transform 200ms cubic-bezier(0.16,1,0.3,1), background-color 200ms; }
+  .dots button.active { transform: scale(1.3); background: #FFE14D; }
+  /* 页脚降级 Corporate */
+  .snap-footer { scroll-snap-align: start; background: #101014; color: #999; text-align: center; font-size: 14px; padding: 36px 24px; }
+  @media (max-width: 768px) {
+    .snap-section h1 { font-size: 34px; }
+    .snap-section p { font-size: 16px; }
+    .snap-section .visual { font-size: 64px; }
+    .dots { right: auto; left: 50%; top: auto; bottom: 16px; transform: translateX(-50%); flex-direction: row; }
+  }
+</style>
+</head>
+<body>
+<div class="snap-wrap" id="snapWrap">
+  <section class="snap-section s1" data-section="0">
+    <span class="deco d1">🎵</span>
+    <div class="tag">STARWAVE 2026</div>
+    <h1><span class="accent-s1">星浪音乐节</span></h1>
+    <p>2026 年 7 月 18–19 日 · 海边大草坪</p>
+    <div class="visual">🎶</div>
+    <button class="btn-ghost" data-goto="1">看看阵容 ↓</button>
+    <div class="wave"><i></i><i></i><i></i><i></i><i></i></div>
+  </section>
+  <section class="snap-section s2" data-section="1">
+    <span class="deco d2">🎸</span>
+    <div class="tag">LINEUP</div>
+    <h1><span class="accent-s2">32 组艺人</span></h1>
+    <p>两天四舞台，从日落唱到星空。</p>
+    <div class="visual">🎤</div>
+    <button class="btn-ghost" data-goto="2">看看场地 ↓</button>
+    <div class="wave"><i></i><i></i><i></i><i></i><i></i></div>
+  </section>
+  <section class="snap-section s3" data-section="2">
+    <span class="deco d1">🏖️</span>
+    <div class="tag">VENUE</div>
+    <h1><span class="accent-s3">海边大草坪</span></h1>
+    <p>面朝大海，露营区、美食市集一次齐全。</p>
+    <div class="visual">🌊</div>
+    <button class="btn-ghost" data-goto="3">看看票价 ↓</button>
+    <div class="wave"><i></i><i></i><i></i><i></i><i></i></div>
+  </section>
+  <section class="snap-section s4" data-section="3">
+    <span class="deco d2">🎫</span>
+    <div class="tag">TICKETS</div>
+    <h1><span class="accent-s4">早鸟票 ¥380</span></h1>
+    <p>限量 2000 张，售完恢复 ¥580。</p>
+    <div class="visual">🎟️</div>
+    <button class="btn-stage">立即抢票</button>
+    <div class="wave"><i></i><i></i><i></i><i></i><i></i></div>
+  </section>
+  <footer class="snap-footer">星浪音乐节 · 主办方保留最终解释权 · 票务咨询 400-000-0000</footer>
+</div>
+<nav class="dots" id="dots" aria-label="分段导航">
+  <button data-goto="0" class="active" aria-label="第一段"></button>
+  <button data-goto="1" aria-label="第二段"></button>
+  <button data-goto="2" aria-label="第三段"></button>
+  <button data-goto="3" aria-label="第四段"></button>
+</nav>
+<script>
+(function () {
+  var wrap = document.getElementById('snapWrap');
+  var sections = document.querySelectorAll('.snap-section');
+  var dots = document.querySelectorAll('#dots button');
+  // 圆点导航：点击平滑滚动到对应分段
+  function goTo(i) {
+    sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.querySelectorAll('[data-goto]').forEach(function (el) {
+    el.addEventListener('click', function () { goTo(parseInt(el.getAttribute('data-goto'), 10)); });
+  });
+  // 当前段高亮：IntersectionObserver，阈值 0.5
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var idx = parseInt(entry.target.getAttribute('data-section'), 10);
+        sections.forEach(function (s) { s.classList.remove('active'); });
+        entry.target.classList.add('active');
+        dots.forEach(function (d, i) { d.classList.toggle('active', i === idx); });
+      }
+    });
+  }, { root: wrap, threshold: 0.5 });
+  sections.forEach(function (s) { io.observe(s); });
+  sections[0].classList.add('active');
+})();
+</script>
+</body>
+</html>

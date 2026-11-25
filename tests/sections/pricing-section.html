@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例产品 — 定价区块</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #141210; color: #F2EEE6; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; }
+  /* 环境层：极轻微光晕呼吸 */
+  .ambient { position: fixed; top: 12%; left: 0; right: 0; width: 100%; max-width: 640px; height: 320px; margin: 0 auto; background: #E8C87A; opacity: 0.05; border-radius: 50%; pointer-events: none; animation: breathe 3000ms ease-in-out infinite alternate; }
+  @keyframes breathe { from { opacity: 0.03; } to { opacity: 0.06; } }
+  .sec-head { text-align: center; padding: 72px 0 32px; }
+  .sec-kicker { font-size: 14px; font-weight: 700; color: #E8C87A; letter-spacing: 3px; }
+  .sec-head h2 { font-size: 32px; font-weight: 600; margin: 12px 0 14px; letter-spacing: 1px; }
+  .sec-head p { font-size: 17px; color: #A9A49A; }
+  /* 月付/年付切换 */
+  .billing-toggle { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 40px; font-size: 16px; }
+  .toggle { position: relative; width: 56px; height: 28px; border-radius: 14px; background: #2C2A26; border: 1px solid #4A463F; cursor: pointer; }
+  .toggle-knob { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #E8C87A; transform: translateX(0); transition: transform 400ms cubic-bezier(0.4,0,0.2,1); }
+  .toggle[aria-pressed="true"] .toggle-knob { transform: translateX(28px); }
+  .save-tag { color: #E8C87A; font-size: 14px; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding-bottom: 24px; align-items: stretch; }
+  .tier { background: #1D1B18; border: 1px solid #33302A; border-radius: 12px; padding: 36px 30px; position: relative; }
+  .tier.recommended { border-color: #E8C87A; transform: translateY(-8px); }
+  .tier-badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: #E8C87A; color: #141210; font-size: 13px; font-weight: 700; padding: 4px 14px; border-radius: 12px; }
+  .tier h3 { font-size: 20px; font-weight: 600; margin-bottom: 16px; letter-spacing: 1px; }
+  .tier-price { font-size: 44px; font-weight: 600; line-height: 1; margin-bottom: 8px; }
+  .tier-price small { font-size: 16px; color: #A9A49A; }
+  .tier-per { font-size: 14px; color: #A9A49A; margin-bottom: 24px; }
+  .tier-features { list-style: none; margin-bottom: 28px; }
+  .tier-features li { font-size: 16px; color: #D8D2C6; padding: 7px 0; border-top: 1px solid #2C2A26; }
+  .tier-btn { width: 100%; padding: 13px 0; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; border: 1px solid #E8C87A; background: transparent; color: #E8C87A; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+  .tier-btn:hover { opacity: 0.85; }
+  .tier-btn.solid { background: #E8C87A; color: #141210; border-color: #E8C87A; }
+  /* 入场：淡入上移 20px，600ms，间隔 120ms；角标晚 150ms；功能清单晚 100ms */
+  .reveal { opacity: 0; transform: translateY(20px); }
+  .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 600ms cubic-bezier(0.4,0,0.2,1), transform 600ms cubic-bezier(0.4,0,0.2,1); }
+  .reveal.visible.d1 { transition-delay: 120ms; }
+  .reveal.visible.d2 { transition-delay: 240ms; }
+  /* 推荐档静态抬升：优先级高于 .reveal.visible 的 translateY(0)，否则抬升被盖住 */
+  .tier.recommended.reveal.visible { transform: translateY(-8px); }
+  .tier-badge { opacity: 0; transition: opacity 600ms cubic-bezier(0.4,0,0.2,1); transition-delay: 150ms; }
+  .reveal.visible .tier-badge { opacity: 1; }
+  .tier-features { opacity: 0; transition: opacity 600ms cubic-bezier(0.4,0,0.2,1); transition-delay: 100ms; }
+  .reveal.visible .tier-features { opacity: 1; }
+  /* 价格切换：淡出上移 12px 后换价淡入 */
+  .tier-price.swap { opacity: 0; transform: translateY(-12px); transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1); }
+  .tier-price { transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1); }
+  .sec-note { text-align: center; color: #A9A49A; font-size: 14px; padding-bottom: 72px; }
+  @media (max-width: 768px) {
+    .tiers { grid-template-columns: 1fr; }
+    .tier.recommended { transform: translateY(0); }
+    .sec-head h2 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="container">
+  <div class="sec-head">
+    <div class="sec-kicker">定价</div>
+    <h2>选一档，开始用吧</h2>
+    <p>三档价格，按需选择，随时可以取消。</p>
+  </div>
+  <div class="billing-toggle">
+    <span id="labelMonthly">月付</span>
+    <button class="toggle" id="billingToggle" aria-pressed="false" aria-label="切换月付与年付"><span class="toggle-knob"></span></button>
+    <span>年付 <span class="save-tag">省 20%</span></span>
+  </div>
+  <div class="tiers">
+    <div class="tier reveal">
+      <h3>基础版</h3>
+      <div class="tier-price"><span class="price-num" data-monthly="99" data-yearly="79">¥99</span><small>/月</small></div>
+      <div class="tier-per">适合个人试用</div>
+      <ul class="tier-features">
+        <li>5 个项目</li>
+        <li>基础报表</li>
+        <li>邮件支持</li>
+        <li>1GB 存储</li>
+        <li>单人使用</li>
+      </ul>
+      <button class="tier-btn">选择基础版</button>
+    </div>
+    <div class="tier recommended reveal d1">
+      <div class="tier-badge">推荐</div>
+      <h3>专业版</h3>
+      <div class="tier-price"><span class="price-num" data-monthly="199" data-yearly="159">¥199</span><small>/月</small></div>
+      <div class="tier-per">适合小团队协作</div>
+      <ul class="tier-features">
+        <li>不限项目</li>
+        <li>高级报表</li>
+        <li>优先支持</li>
+        <li>100GB 存储</li>
+        <li>10 人团队</li>
+      </ul>
+      <button class="tier-btn solid">开始试用</button>
+    </div>
+    <div class="tier reveal d2">
+      <h3>企业版</h3>
+      <div class="tier-price"><span class="price-num" data-monthly="299" data-yearly="239">¥299</span><small>/月</small></div>
+      <div class="tier-per">适合大团队部署</div>
+      <ul class="tier-features">
+        <li>不限项目</li>
+        <li>专属报表</li>
+        <li>专属客服</li>
+        <li>不限存储</li>
+        <li>不限人数</li>
+      </ul>
+      <button class="tier-btn">联系销售</button>
+    </div>
+  </div>
+  <p class="sec-note">随时取消 · 无需信用卡 · 7 天免费试用</p>
+</div>
+<script>
+(function () {
+  // 入场揭示
+  document.querySelectorAll('.tier.reveal').forEach(function (el) { el.classList.add('visible'); });
+  // 月付/年付切换：价格淡出上移后换价淡入，年付 = 月付 8 折
+  var toggle = document.getElementById('billingToggle');
+  toggle.addEventListener('click', function () {
+    var yearly = toggle.getAttribute('aria-pressed') !== 'true';
+    toggle.setAttribute('aria-pressed', yearly ? 'true' : 'false');
+    document.querySelectorAll('.tier-price').forEach(function (priceEl) {
+      priceEl.classList.add('swap');
+    });
+    setTimeout(function () {
+      document.querySelectorAll('.price-num').forEach(function (num) {
+        num.textContent = '¥' + (yearly ? num.getAttribute('data-yearly') : num.getAttribute('data-monthly'));
+      });
+      document.querySelectorAll('.tier-price').forEach(function (priceEl) {
+        priceEl.classList.remove('swap');
+      });
+    }, 400);
+  });
+})();
+</script>
+</body>
+</html>

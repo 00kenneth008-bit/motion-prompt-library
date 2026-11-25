@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例产品 — 顶部导航</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #FFFFFF; color: #222; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  /* 顶部导航：吸顶；紧凑态高度直接切换（无过渡），Logo 缩放 0.92 + 上移 4px，边框淡入 */
+  .site-nav { position: sticky; top: 0; background: #fff; z-index: 20; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .site-nav.compact .nav-inner { padding: 12px 0; }
+  .logo { font-size: 22px; font-weight: 700; color: #1A1A1A; transition: transform 400ms cubic-bezier(0.4,0,0.2,1); }
+  .site-nav.compact .logo { transform: scale(0.92) translateY(-4px); }
+  .nav-links { display: flex; gap: 32px; align-items: center; transition: transform 400ms cubic-bezier(0.4,0,0.2,1); }
+  .site-nav.compact .nav-links { transform: translateY(-4px); }
+  .nav-links a { color: #555; text-decoration: none; font-size: 16px; }
+  .nav-cta { background: #1A1A1A; color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+  .nav-cta:hover { opacity: 0.85; }
+  .nav-border { height: 1px; background: #E8E8E8; opacity: 0; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); transition-delay: 100ms; }
+  .site-nav.compact .nav-border { opacity: 1; }
+  /* 汉堡按钮：768px 以下显示 */
+  .hamburger { display: none; background: none; border: none; cursor: pointer; width: 40px; height: 40px; position: relative; }
+  .hamburger .line { position: absolute; left: 8px; width: 24px; height: 2px; background: #1A1A1A; transition: transform 400ms cubic-bezier(0.4,0,0.2,1), opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+  .hamburger .line1 { top: 14px; }
+  .hamburger .line2 { top: 24px; }
+  .hamburger.open .line1 { transform: translateY(5px) rotate(45deg); }
+  .hamburger.open .line2 { transform: translateY(-5px) rotate(-45deg); }
+  /* 移动端菜单：淡入下滑 8px，链接依次淡入间隔 60ms */
+  .mobile-menu { display: none; background: #fff; border-bottom: 1px solid #E8E8E8; padding: 8px 24px 20px; opacity: 0; transform: translateY(-8px); transition: opacity 400ms cubic-bezier(0.4,0,0.2,1), transform 400ms cubic-bezier(0.4,0,0.2,1); }
+  .mobile-menu.open { display: block; opacity: 1; transform: translateY(0); }
+  .mobile-menu a { display: block; font-size: 17px; color: #222; text-decoration: none; padding: 12px 0; border-bottom: 1px solid #F0F0F0; opacity: 0; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+  .mobile-menu.open a { opacity: 1; }
+  .mobile-menu.open a:nth-child(1) { transition-delay: 60ms; }
+  .mobile-menu.open a:nth-child(2) { transition-delay: 120ms; }
+  .mobile-menu.open a:nth-child(3) { transition-delay: 180ms; }
+  .mobile-menu.open a:nth-child(4) { transition-delay: 240ms; }
+  .mobile-menu .nav-cta { display: block; width: 100%; margin-top: 16px; }
+  /* 演示内容 */
+  .demo { padding: 64px 0; }
+  .demo h1 { font-size: 36px; font-weight: 700; margin-bottom: 16px; }
+  .demo p { font-size: 17px; color: #666; line-height: 1.8; margin-bottom: 20px; }
+  .demo-block { height: 420px; background: #F7F8FA; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 18px; margin-bottom: 24px; }
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: block; }
+    .demo h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+<header class="site-nav" id="siteNav">
+  <div class="container">
+    <div class="nav-inner">
+      <div class="logo">示例产品</div>
+      <nav class="nav-links">
+        <a href="#">功能</a>
+        <a href="#">价格</a>
+        <a href="#">客户</a>
+        <a href="#">文档</a>
+        <button class="nav-cta">免费注册</button>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-expanded="false" aria-label="打开菜单"><span class="line line1"></span><span class="line line2"></span></button>
+    </div>
+  </div>
+  <div class="nav-border"></div>
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <a href="#">功能</a>
+    <a href="#">价格</a>
+    <a href="#">客户</a>
+    <a href="#">文档</a>
+    <button class="nav-cta">免费注册</button>
+  </div>
+</header>
+<main class="container demo">
+  <h1>向下滚动，导航会变紧凑</h1>
+  <p>示例产品的顶部导航在滚动超过 80px 后进入紧凑态：高度收起，Logo 轻微缩放，底部出现细边框。手机上点右上角汉堡按钮可以展开菜单。</p>
+  <div class="demo-block">演示内容区块 1</div>
+  <div class="demo-block">演示内容区块 2</div>
+  <div class="demo-block">演示内容区块 3</div>
+</main>
+<script>
+(function () {
+  var nav = document.getElementById('siteNav');
+  // 滚动收缩：超过 80px 进入紧凑态，rAF 节流
+  var ticking = false;
+  function onScroll() {
+    ticking = false;
+    nav.classList.toggle('compact', window.scrollY > 80);
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
+  onScroll();
+  // 汉堡菜单
+  var burger = document.getElementById('hamburger');
+  var menu = document.getElementById('mobileMenu');
+  function setMenu(open) {
+    burger.classList.toggle('open', open);
+    menu.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  burger.addEventListener('click', function () {
+    setMenu(!menu.classList.contains('open'));
+  });
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () { setMenu(false); });
+  });
+})();
+</script>
+</body>
+</html>

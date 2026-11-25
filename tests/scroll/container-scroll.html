@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云帆协作 — 团队效率工具</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F7F8FA; color: #222; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  /* 顶部进度条：scaleX 伸缩 */
+  .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: #1677FF; transform-origin: left; transform: scaleX(0); z-index: 10; }
+  /* 导航 */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .logo { font-size: 22px; font-weight: 700; color: #1677FF; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: #555; text-decoration: none; font-size: 16px; }
+  .nav-login { color: #1677FF; font-size: 16px; background: none; border: none; cursor: pointer; }
+  .nav-cta { background: #1677FF; color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: background-color 200ms cubic-bezier(0.2,0,0,1); }
+  .nav-cta:hover { background-color: #0E5ED6; }
+  /* 首屏 */
+  .hero { text-align: center; padding: 64px 0 72px; }
+  .hero h1 { font-size: 40px; font-weight: 700; }
+  .hero p { font-size: 18px; color: #666; margin: 16px 0 28px; }
+  .btn-primary { background: #1677FF; color: #fff; border: none; padding: 14px 36px; border-radius: 8px; font-size: 17px; font-weight: 600; cursor: pointer; transition: background-color 200ms cubic-bezier(0.2,0,0,1); }
+  .btn-primary:hover { background-color: #0E5ED6; }
+  /* 内容区块 */
+  .section { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 72px 0; border-top: 1px solid #E8E8E8; }
+  .section.reverse .sec-text { order: 2; }
+  .section.reverse .sec-visual { order: 1; }
+  .sec-kicker { font-size: 14px; font-weight: 700; color: #1677FF; letter-spacing: 2px; }
+  .section h2 { font-size: 30px; font-weight: 700; margin: 12px 0 14px; }
+  .section p { font-size: 17px; color: #666; line-height: 1.7; }
+  .sec-visual { background: #fff; border: 1px solid #E8E8E8; border-radius: 8px; height: 280px; display: flex; align-items: center; justify-content: center; font-size: 84px; }
+  /* 揭示：透明度 + 上移 16px，400ms，间隔 80ms；阈值 20% */
+  .reveal { opacity: 0; transform: translateY(16px); }
+  .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); }
+  .reveal.visible.d1 { transition-delay: 80ms; }
+  .reveal.visible.d2 { transition-delay: 160ms; }
+  /* CTA 与页脚 */
+  .cta { text-align: center; padding: 80px 0; border-top: 1px solid #E8E8E8; }
+  .cta h2 { font-size: 32px; font-weight: 700; margin-bottom: 24px; }
+  footer { text-align: center; color: #999; font-size: 14px; padding: 32px 0 40px; border-top: 1px solid #E8E8E8; }
+  @media (max-width: 768px) {
+    .section { grid-template-columns: 1fr; gap: 24px; padding: 48px 0; }
+    .section.reverse .sec-text { order: 1; }
+    .section.reverse .sec-visual { order: 2; }
+    .hero h1 { font-size: 30px; }
+    .hero p { font-size: 16px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="container">
+  <nav>
+    <div class="logo">⛵ 云帆协作</div>
+    <div class="nav-links">
+      <a href="#">功能</a>
+      <a href="#">价格</a>
+      <a href="#">客户</a>
+      <a href="#">文档</a>
+      <button class="nav-login">登录</button>
+      <button class="nav-cta">免费注册</button>
+    </div>
+  </nav>
+  <section class="hero">
+    <h1>让团队协作更简单</h1>
+    <p>任务、文档、日程放在一处，团队不再到处找东西。</p>
+    <button class="btn-primary">开始使用</button>
+  </section>
+  <section class="section" data-reveal-group>
+    <div class="sec-text">
+      <div class="sec-kicker reveal">任务管理</div>
+      <h2 class="reveal d1">任务分派一目了然</h2>
+      <p class="reveal d2">看板、列表、日历三种视图自由切换，截止提醒自动推送，子任务可以无限拆分，再复杂的项目也不乱。</p>
+    </div>
+    <div class="sec-visual reveal d1">📋</div>
+  </section>
+  <section class="section reverse" data-reveal-group>
+    <div class="sec-text">
+      <div class="sec-kicker reveal">文档协作</div>
+      <h2 class="reveal d1">多人同时编辑</h2>
+      <p class="reveal d2">改动实时同步，版本历史随时回退，评论 @ 一下就提醒到人，写文档不再来回传文件。</p>
+    </div>
+    <div class="sec-visual reveal d1">📄</div>
+  </section>
+  <section class="section" data-reveal-group>
+    <div class="sec-text">
+      <div class="sec-kicker reveal">日程安排</div>
+      <h2 class="reveal d1">会议排期自动对齐</h2>
+      <p class="reveal d2">团队日历一键订阅，会议冲突自动提醒，循环日程批量创建，时间不再撞车。</p>
+    </div>
+    <div class="sec-visual reveal d1">📅</div>
+  </section>
+  <section class="section reverse" data-reveal-group>
+    <div class="sec-text">
+      <div class="sec-kicker reveal">数据洞察</div>
+      <h2 class="reveal d1">进度数据随手可查</h2>
+      <p class="reveal d2">项目进度、成员负荷、延期风险一张报表说清楚，每周例会不用再现做 PPT。</p>
+    </div>
+    <div class="sec-visual reveal d1">📊</div>
+  </section>
+  <section class="cta">
+    <h2>现在就开始用云帆</h2>
+    <button class="btn-primary">开始使用</button>
+  </section>
+  <footer>免费版支持 5 人团队 · 无需信用卡</footer>
+</div>
+<script>
+(function () {
+  // 揭示：IntersectionObserver，阈值 20%，触发一次
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-reveal-group]').forEach(function (g) { io.observe(g); });
+  // 顶部进度条：scaleX，随滚动更新，rAF 节流
+  var bar = document.getElementById('progress');
+  var ticking = false;
+  function updateBar() {
+    ticking = false;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var p = h > 0 ? window.scrollY / h : 0;
+    bar.style.transform = 'scaleX(' + p.toFixed(3) + ')';
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(updateBar); }
+  }, { passive: true });
+  updateBar();
+})();
+</script>
+</body>
+</html>

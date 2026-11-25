@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阳光夏令营 — 快乐一夏</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #E8F4FD; color: #333; min-height: 100vh; overflow-x: hidden; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
+  /* 视差场景 */
+  .scene { position: relative; height: 100vh; min-height: 640px; overflow: hidden; }
+  .layer { position: absolute; left: 0; right: 0; will-change: transform; }
+  .layer-clouds { top: 0; height: 320px; z-index: 0; }
+  .cloud { position: absolute; font-size: 64px; opacity: 0.9; animation: drift 8s ease-in-out infinite alternate; }
+  .cloud.c1 { top: 40px; left: 8%; }
+  .cloud.c2 { top: 120px; left: 55%; animation-delay: 2s; }
+  .cloud.c3 { top: 60px; left: 80%; animation-delay: 4s; }
+  @keyframes drift { from { transform: translateX(0); } to { transform: translateX(48px); } }
+  .layer-hills { bottom: 0; height: 260px; z-index: 1; font-size: 200px; line-height: 1; text-align: center; letter-spacing: 24px; opacity: 0.95; }
+  .layer-content { position: relative; z-index: 2; text-align: center; padding-top: 22vh; }
+  .layer-content h1 { font-size: 52px; font-weight: 800; color: #1F6F3B; }
+  .layer-content p { font-size: 19px; color: #444; margin: 18px 0 30px; }
+  .btn-primary { background: #FF7A45; color: #fff; border: none; padding: 15px 36px; border-radius: 16px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 300ms cubic-bezier(0.68,-0.55,0.27,1.55); }
+  .btn-primary:hover { transform: scale(1.05); }
+  .btn-primary:active { transform: scale(0.97); }
+  /* 次要层：漂浮气球 */
+  .balloon { position: absolute; font-size: 44px; z-index: 2; animation: bob 4s ease-in-out infinite; pointer-events: none; }
+  .balloon.b1 { top: 30%; left: 10%; animation-delay: 0.5s; }
+  .balloon.b2 { top: 24%; right: 9%; animation-delay: 1.5s; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+  /* 导航 */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; position: relative; z-index: 3; }
+  .logo { font-size: 22px; font-weight: 800; color: #FF7A45; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: #444; text-decoration: none; font-size: 16px; }
+  .nav-cta { background: #FF7A45; color: #fff; border: none; padding: 10px 22px; border-radius: 999px; font-size: 16px; font-weight: 600; cursor: pointer; }
+  /* 活动区块 */
+  .section { background: #FFF9F0; }
+  .activity { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 72px 0; border-top: 1px solid #F0E6D8; }
+  .activity.reverse .act-text { order: 2; }
+  .activity.reverse .act-visual { order: 1; }
+  .activity h2 { font-size: 30px; font-weight: 800; margin-bottom: 14px; }
+  .activity p { font-size: 17px; color: #666; line-height: 1.7; }
+  .act-visual { background: #fff; border-radius: 16px; height: 260px; display: flex; align-items: center; justify-content: center; font-size: 84px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  /* 区块入场：弹入 300ms ease-out-back，阈值 20% */
+  .reveal { opacity: 0; transform: translateY(16px); }
+  .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 300ms cubic-bezier(0.68,-0.55,0.27,1.55), transform 300ms cubic-bezier(0.68,-0.55,0.27,1.55); }
+  .reveal.visible.d1 { transition-delay: 80ms; }
+  /* CTA 与页脚 */
+  .cta { text-align: center; padding: 80px 0; background: #FFF9F0; border-top: 1px solid #F0E6D8; }
+  .cta h2 { font-size: 32px; font-weight: 800; margin-bottom: 24px; }
+  footer { text-align: center; color: #999; font-size: 14px; padding: 32px 0 40px; background: #FFF9F0; }
+  @media (max-width: 768px) {
+    .activity { grid-template-columns: 1fr; gap: 24px; padding: 48px 0; }
+    .activity.reverse .act-text { order: 1; }
+    .activity.reverse .act-visual { order: 2; }
+    .layer-content h1 { font-size: 34px; }
+    .layer-content p { font-size: 16px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <div class="layer layer-clouds" id="layerClouds">
+    <span class="cloud c1">☁️</span>
+    <span class="cloud c2">⛅</span>
+    <span class="cloud c3">☁️</span>
+  </div>
+  <div class="layer layer-hills" id="layerHills">⛰️⛰️⛰️</div>
+  <span class="balloon b1">🎈</span>
+  <span class="balloon b2">🎈</span>
+  <div class="layer-content" id="layerContent">
+    <nav>
+      <div class="logo">☀️ 阳光夏令营</div>
+      <div class="nav-links">
+        <a href="#">活动</a>
+        <a href="#">营地</a>
+        <a href="#">安全</a>
+        <button class="nav-cta">立即报名</button>
+      </div>
+    </nav>
+    <h1>快乐一夏</h1>
+    <p>七天六夜，大自然是最好的课堂。</p>
+    <button class="btn-primary">看看活动</button>
+  </div>
+</div>
+<div class="section">
+  <div class="container">
+    <div class="activity" data-reveal-group>
+      <div class="act-text">
+        <h2 class="reveal">森林探险</h2>
+        <p class="reveal d1">跟着向导走进森林，认识植物、观察昆虫，晚上在星空下听故事。安全员全程陪同，家长实时收到照片。</p>
+      </div>
+      <div class="act-visual reveal d1">🌲</div>
+    </div>
+    <div class="activity reverse" data-reveal-group>
+      <div class="act-text">
+        <h2 class="reveal">溪流皮划艇</h2>
+        <p class="reveal d1">穿上救生衣，划着皮划艇顺流而下。教练一对四教学，第一次下水的孩子也能放心玩。</p>
+      </div>
+      <div class="act-visual reveal d1">🛶</div>
+    </div>
+    <div class="activity" data-reveal-group>
+      <div class="act-text">
+        <h2 class="reveal">星空露营</h2>
+        <p class="reveal d1">自己搭帐篷、自己生篝火，睡前一起数星星。营地有 24 小时值班老师，夜里也安心。</p>
+      </div>
+      <div class="act-visual reveal d1">⛺</div>
+    </div>
+  </div>
+  <div class="cta">
+    <h2>这个夏天，一起出发</h2>
+    <button class="btn-primary">立即报名</button>
+  </div>
+  <footer>阳光夏令营 · 7–12 岁 · 每期 30 人</footer>
+</div>
+<script>
+(function () {
+  // 视差：背景 0.3× / 中间 0.6× / 前景 1×，rAF 节流，只动 transform
+  var clouds = document.getElementById('layerClouds');
+  var hills = document.getElementById('layerHills');
+  var content = document.getElementById('layerContent');
+  var ticking = false;
+  function updateParallax() {
+    ticking = false;
+    var y = window.scrollY;
+    clouds.style.transform = 'translateY(' + (y * 0.3).toFixed(1) + 'px)';
+    hills.style.transform = 'translateY(' + (y * 0.6).toFixed(1) + 'px)';
+    content.style.transform = 'translateY(' + (y * 1.0).toFixed(1) + 'px)';
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(updateParallax); }
+  }, { passive: true });
+  // 区块入场：IntersectionObserver，阈值 20%
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-reveal-group]').forEach(function (g) { io.observe(g); });
+})();
+</script>
+</body>
+</html>

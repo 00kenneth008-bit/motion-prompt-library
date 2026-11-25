@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>夏日音乐节 — 倒计时开始</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #111111; color: #FFFFFF; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .logo { font-size: 22px; font-weight: 900; letter-spacing: 0.05em; color: #FFD500; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: #CCCCCC; text-decoration: none; font-size: 16px; font-weight: 600; }
+  .hero { text-align: center; padding: 72px 0 80px; position: relative; overflow: hidden; }
+  .hero h1 { font-size: 64px; font-weight: 900; letter-spacing: 0.02em; line-height: 1.15; text-transform: uppercase; }
+  .hero h1 span { color: #FFD500; }
+  .countdown { display: flex; justify-content: center; gap: 24px; margin: 36px 0; }
+  .cd-box { background: #1E1E1E; border-radius: 4px; padding: 20px 28px; min-width: 100px; }
+  .cd-box b { font-size: 40px; font-weight: 900; color: #FFD500; display: block; }
+  .cd-box span { font-size: 13px; color: #999; letter-spacing: 0.1em; }
+  .btn-main { background: #FFD500; color: #111; border: none; padding: 18px 56px; border-radius: 4px; font-size: 19px; font-weight: 900; letter-spacing: 0.05em; cursor: pointer; transition: transform 200ms ease-out-expo; }
+  .btn-main:hover { transform: scale(1.08); }
+  .btn-main:active { transform: scale(0.95); }
+  .hero-visual { margin-top: 56px; font-size: 160px; line-height: 1; display: inline-block; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  /* 次要层：快速划过的光带 */
+  .light-streak { position: absolute; height: 2px; width: 200px; background: linear-gradient(90deg, transparent, #FFD500, transparent); opacity: 0.6; animation: streak 3s ease-out infinite; }
+  .light-streak.s1 { top: 30%; left: -200px; animation-delay: 0.5s; }
+  .light-streak.s2 { top: 60%; left: -200px; animation-delay: 1.5s; }
+  @keyframes streak { 0% { left: -200px; } 100% { left: 110%; } }
+  /* 环境层：闪烁点 */
+  .sparkle { position: absolute; width: 4px; height: 4px; background: #FFD500; border-radius: 50%; animation: sparkle 1.5s ease-in-out infinite; }
+  .sparkle.p1 { top: 15%; left: 15%; }
+  .sparkle.p2 { top: 25%; right: 12%; animation-delay: 0.5s; }
+  .sparkle.p3 { bottom: 20%; left: 20%; animation-delay: 1s; }
+  @keyframes sparkle { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+  .highlights { display: flex; justify-content: center; gap: 40px; padding: 0 0 64px; color: #999; font-size: 15px; font-weight: 600; }
+  /* 入场：快速依次，ease-out-expo，缩放 + 透明度 */
+  @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+  .anim-h1 { animation: zoomIn 200ms cubic-bezier(0.16,1,0.3,1) both; }
+  .anim-cd { animation: zoomIn 200ms cubic-bezier(0.16,1,0.3,1) 60ms both; }
+  .anim-btn { animation: zoomIn 200ms cubic-bezier(0.16,1,0.3,1) 120ms both; }
+  .anim-visual { animation: zoomIn 200ms cubic-bezier(0.16,1,0.3,1) 180ms both; }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .cd-box { padding: 14px 16px; min-width: 70px; }
+    .cd-box b { font-size: 28px; }
+    .nav-links { display: none; }
+    .highlights { flex-direction: column; gap: 12px; align-items: center; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <div class="logo">SUMMER FEST</div>
+    <div class="nav-links">
+      <a href="#">阵容</a>
+      <a href="#">票务</a>
+    </div>
+  </nav>
+  <section class="hero">
+    <span class="light-streak s1"></span>
+    <span class="light-streak s2"></span>
+    <span class="sparkle p1"></span>
+    <span class="sparkle p2"></span>
+    <span class="sparkle p3"></span>
+    <h1 class="anim-h1">夏日音乐节<br><span>倒计时开始</span></h1>
+    <div class="countdown anim-cd">
+      <div class="cd-box"><b>12</b><span>天</span></div>
+      <div class="cd-box"><b>08</b><span>小时</span></div>
+      <div class="cd-box"><b>32</b><span>分钟</span></div>
+      <div class="cd-box"><b>15</b><span>秒</span></div>
+    </div>
+    <div class="anim-btn"><button class="btn-main">立即参加</button></div>
+    <div class="hero-visual anim-visual">🎵</div>
+  </section>
+  <div class="highlights">
+    <span>🎤 20+ 乐队现场</span>
+    <span>🎪 三天两夜露营</span>
+    <span>🎫 早鸟票限量发售</span>
+  </div>
+</div>
+</body>
+</html>

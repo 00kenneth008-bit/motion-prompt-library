@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例产品 — 表单组件</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F7F8FA; color: #222; min-height: 100vh; }
+  .container { max-width: 640px; margin: 0 auto; padding: 0 24px; }
+  .page-head { text-align: center; padding: 64px 0 36px; }
+  .page-head h1 { font-size: 32px; font-weight: 700; }
+  .page-head p { font-size: 17px; color: #666; margin-top: 12px; }
+  .form-card { background: #fff; border: 1px solid #E8E8E8; border-radius: 8px; padding: 36px 32px; margin-bottom: 80px; position: relative; }
+  .field { position: relative; margin-bottom: 8px; }
+  .field input, .field textarea { width: 100%; padding: 22px 14px 10px; font-size: 16px; border: 1px solid #D9D9D9; border-radius: 8px; outline: none; background: #fff; font-family: inherit; }
+  .field textarea { min-height: 110px; resize: vertical; }
+  .field input:focus, .field textarea:focus { border-color: #1677FF; }
+  .field input.error, .field textarea.error { border-color: #E5484D; }
+  /* 浮动标签：只动 transform，上移 18px 缩小 0.8 倍，300ms */
+  .field label { position: absolute; left: 14px; top: 17px; font-size: 16px; color: #999; pointer-events: none; transition: transform 300ms cubic-bezier(0.2,0,0,1), color 300ms cubic-bezier(0.2,0,0,1); transform-origin: left top; }
+  .field input:focus + label, .field input:not(:placeholder-shown) + label,
+  .field textarea:focus + label, .field textarea:not(:placeholder-shown) + label { transform: translateY(-18px) scale(0.8); color: #1677FF; }
+  .field input.error + label, .field textarea.error + label { color: #E5484D; }
+  .field-error { font-size: 14px; color: #E5484D; margin: 6px 0 14px 2px; opacity: 0; transition: opacity 200ms cubic-bezier(0.2,0,0,1); transition-delay: 50ms; min-height: 0; }
+  .field-error.show { opacity: 1; }
+  .submit-btn { width: 100%; padding: 14px 0; border-radius: 8px; font-size: 17px; font-weight: 600; cursor: pointer; border: none; background: #1677FF; color: #fff; margin-top: 12px; transition: background-color 200ms cubic-bezier(0.2,0,0,1); }
+  .submit-btn:hover { background-color: #0E5ED6; }
+  .submit-btn:disabled { opacity: 0.6; cursor: default; }
+  /* 表单淡出下移 12px，成功面板淡入上移 12px，400ms */
+  #contactForm.leaving { opacity: 0; transform: translateY(12px); transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); pointer-events: none; }
+  #contactForm { transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); }
+  .success-panel { display: none; text-align: center; padding: 48px 16px; opacity: 0; transform: translateY(12px); transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); }
+  .success-panel.show { display: block; opacity: 1; transform: translateY(0); }
+  .success-check { font-size: 56px; color: #1677FF; display: inline-block; transform: scale(0.9); transition: transform 300ms cubic-bezier(0.2,0,0,1); }
+  .success-panel.show .success-check { transform: scale(1); }
+  .success-panel h2 { font-size: 24px; font-weight: 700; margin: 16px 0 10px; }
+  .success-panel p { font-size: 16px; color: #666; margin-bottom: 24px; }
+  .again-btn { padding: 12px 28px; border-radius: 8px; font-size: 16px; cursor: pointer; border: 1px solid #1677FF; background: #fff; color: #1677FF; transition: background-color 200ms cubic-bezier(0.2,0,0,1); }
+  .again-btn:hover { background-color: #EAF3FF; }
+  @media (max-width: 768px) {
+    .page-head h1 { font-size: 26px; }
+    .form-card { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="page-head">
+    <h1>联系我们</h1>
+    <p>填三个字段就能发消息，点标签会浮上去，提交后有明确反馈。</p>
+  </div>
+  <div class="form-card">
+    <form id="contactForm" novalidate>
+      <div class="field">
+        <input type="text" id="fName" placeholder=" " autocomplete="name">
+        <label for="fName">姓名</label>
+      </div>
+      <p class="field-error" id="eName" aria-live="polite">请填写姓名</p>
+      <div class="field">
+        <input type="email" id="fEmail" placeholder=" " autocomplete="email">
+        <label for="fEmail">邮箱</label>
+      </div>
+      <p class="field-error" id="eEmail" aria-live="polite">请输入正确的邮箱地址</p>
+      <div class="field">
+        <textarea id="fMsg" placeholder=" "></textarea>
+        <label for="fMsg">留言</label>
+      </div>
+      <p class="field-error" id="eMsg" aria-live="polite">请填写留言内容</p>
+      <button type="submit" class="submit-btn" id="submitBtn">发送消息</button>
+    </form>
+    <div class="success-panel" id="successPanel">
+      <span class="success-check">✓</span>
+      <h2>发送成功</h2>
+      <p>你的消息已经发出，我们会在一个工作日内回复。</p>
+      <button class="again-btn" id="againBtn">再填一份</button>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var form = document.getElementById('contactForm');
+  var nameI = document.getElementById('fName');
+  var emailI = document.getElementById('fEmail');
+  var msgI = document.getElementById('fMsg');
+  var btn = document.getElementById('submitBtn');
+  var panel = document.getElementById('successPanel');
+  function setErr(input, errEl, bad) {
+    input.classList.toggle('error', bad);
+    errEl.classList.toggle('show', bad);
+    return !bad;
+  }
+  [nameI, emailI, msgI].forEach(function (inp) {
+    inp.addEventListener('input', function () {
+      inp.classList.remove('error');
+      var map = { fName: 'eName', fEmail: 'eEmail', fMsg: 'eMsg' };
+      document.getElementById(map[inp.id]).classList.remove('show');
+    });
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var okName = setErr(nameI, document.getElementById('eName'), nameI.value.trim() === '');
+    var okEmail = setErr(emailI, document.getElementById('eEmail'), !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailI.value.trim()));
+    var okMsg = setErr(msgI, document.getElementById('eMsg'), msgI.value.trim() === '');
+    if (!(okName && okEmail && okMsg)) { return; }
+    btn.disabled = true;
+    btn.textContent = '提交中…';
+    setTimeout(function () {
+      form.classList.add('leaving');
+      setTimeout(function () {
+        form.style.display = 'none';
+        panel.classList.add('show');
+      }, 400);
+    }, 300);
+  });
+  document.getElementById('againBtn').addEventListener('click', function () {
+    panel.classList.remove('show');
+    form.reset();
+    form.style.display = '';
+    form.classList.remove('leaving');
+    btn.disabled = false;
+    btn.textContent = '发送消息';
+  });
+})();
+</script>
+</body>
+</html>

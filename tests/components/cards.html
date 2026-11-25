@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例产品 — 卡片组件</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #141210; color: #F2EEE6; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; }
+  /* 环境层：极轻微光晕呼吸 */
+  .ambient { position: fixed; top: 10%; left: 0; right: 0; width: 100%; max-width: 640px; height: 320px; margin: 0 auto; background: #E8C87A; opacity: 0.05; border-radius: 50%; pointer-events: none; animation: breathe 3000ms ease-in-out infinite alternate; }
+  @keyframes breathe { from { opacity: 0.03; } to { opacity: 0.06; } }
+  .page-head { text-align: center; padding: 64px 0 40px; }
+  .page-head h1 { font-size: 32px; font-weight: 600; letter-spacing: 1px; }
+  .page-head p { font-size: 17px; color: #A9A49A; margin-top: 12px; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding-bottom: 80px; }
+  .card { position: relative; background: #1D1B18; border: 1px solid #33302A; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 500ms cubic-bezier(0.4,0,0.2,1); }
+  /* 阴影加深：独立阴影层 ::after 淡入，不直接过渡 box-shadow */
+  .card::after { content: ''; position: absolute; inset: 0; border-radius: 12px; box-shadow: 0 24px 48px rgba(0,0,0,0.45); opacity: 0; transition: opacity 500ms cubic-bezier(0.4,0,0.2,1); pointer-events: none; }
+  .card:hover, .card:focus-visible { transform: translateY(-8px); outline: none; }
+  .card:hover::after, .card:focus-visible::after { opacity: 1; }
+  .card:active { transform: translateY(-6px); transition: transform 200ms cubic-bezier(0.4,0,0.2,1); }
+  .card-media { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 72px; background: #26231F; transition: transform 500ms cubic-bezier(0.4,0,0.2,1); transition-delay: 100ms; }
+  .card:hover .card-media, .card:focus-visible .card-media { transform: scale(1.03); }
+  .card-body { padding: 24px 24px 28px; }
+  .card-body h3 { font-size: 20px; font-weight: 600; margin-bottom: 10px; letter-spacing: 1px; }
+  .card-body p { font-size: 16px; color: #A9A49A; line-height: 1.7; margin-bottom: 16px; }
+  .card-link { color: #E8C87A; font-size: 16px; text-decoration: none; }
+  .card-link .arrow { display: inline-block; transition: transform 400ms cubic-bezier(0.4,0,0.2,1); }
+  .card:hover .card-link .arrow, .card:focus-visible .card-link .arrow { transform: translateX(4px); }
+  /* 入场：淡入上移 20px，600ms，间隔 120ms */
+  .reveal { opacity: 0; transform: translateY(20px); }
+  .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 600ms cubic-bezier(0.4,0,0.2,1), transform 600ms cubic-bezier(0.4,0,0.2,1); }
+  .reveal.visible.d1 { transition-delay: 120ms; }
+  .reveal.visible.d2 { transition-delay: 240ms; }
+  /* 揭示后的悬停抬升与按压：优先级高于 .reveal.visible 的 translateY(0)，否则悬停被盖住 */
+  .card.reveal.visible:hover, .card.reveal.visible:focus-visible { transform: translateY(-8px); transition: transform 500ms cubic-bezier(0.4,0,0.2,1); }
+  .card.reveal.visible:active { transform: translateY(-6px); transition: transform 200ms cubic-bezier(0.4,0,0.2,1); }
+  @media (max-width: 768px) {
+    .cards { grid-template-columns: 1fr; }
+    .page-head h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="container">
+  <div class="page-head">
+    <h1>卡片组件</h1>
+    <p>悬停一张卡片，它会被轻轻“拿起来”。点进去看详情。</p>
+  </div>
+  <div class="cards">
+    <article class="card reveal" tabindex="0">
+      <div class="card-media">🎨</div>
+      <div class="card-body">
+        <h3>示例作品一</h3>
+        <p>第一件示例作品的简介，讲讲它是什么、适合谁用。</p>
+        <a class="card-link" href="#">了解更多 <span class="arrow">→</span></a>
+      </div>
+    </article>
+    <article class="card reveal d1" tabindex="0">
+      <div class="card-media">📷</div>
+      <div class="card-body">
+        <h3>示例作品二</h3>
+        <p>第二件示例作品的简介，讲讲它是什么、适合谁用。</p>
+        <a class="card-link" href="#">了解更多 <span class="arrow">→</span></a>
+      </div>
+    </article>
+    <article class="card reveal d2" tabindex="0">
+      <div class="card-media">🎵</div>
+      <div class="card-body">
+        <h3>示例作品三</h3>
+        <p>第三件示例作品的简介，讲讲它是什么、适合谁用。</p>
+        <a class="card-link" href="#">了解更多 <span class="arrow">→</span></a>
+      </div>
+    </article>
+  </div>
+</div>
+<script>
+(function () {
+  document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
+})();
+</script>
+</body>
+</html>

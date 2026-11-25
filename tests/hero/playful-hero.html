@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小月亮故事机 — 让每个晚上都有故事</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #FFF9F0; color: #333; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  /* 导航 */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .logo { font-size: 22px; font-weight: 800; color: #FF7A45; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: #555; text-decoration: none; font-size: 16px; }
+  .nav-cta { background: #FF7A45; color: #fff; border: none; padding: 10px 22px; border-radius: 999px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 300ms ease-out-back; }
+  .nav-cta:hover { transform: scale(1.05); }
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 64px 0 80px; position: relative; }
+  .hero-text h1 { font-size: 48px; font-weight: 800; line-height: 1.2; color: #222; }
+  .hero-text p { font-size: 18px; color: #666; margin: 20px 0 32px; line-height: 1.6; }
+  .hero-btns { display: flex; gap: 16px; }
+  .btn-primary { background: #FF7A45; color: #fff; border: none; padding: 14px 32px; border-radius: 16px; font-size: 17px; font-weight: 700; cursor: pointer; transition: transform 300ms ease-out-back; }
+  .btn-primary:hover { transform: scale(1.05); }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-secondary { background: #fff; color: #FF7A45; border: 2px solid #FF7A45; padding: 14px 32px; border-radius: 16px; font-size: 17px; font-weight: 700; cursor: pointer; transition: transform 300ms ease-out-back; }
+  .btn-secondary:hover { transform: scale(1.05); }
+  .hero-visual { position: relative; text-align: center; }
+  .hero-visual .moon { font-size: 200px; line-height: 1; display: inline-block; animation: bounce 3s ease-in-out infinite; }
+  @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+  /* 背景漂浮图形（次要层） */
+  .float-star { position: absolute; font-size: 28px; opacity: 0.7; animation: float 4s ease-in-out infinite; }
+  .float-star.s1 { top: 10%; left: 5%; animation-delay: 0.5s; }
+  .float-star.s2 { top: 20%; right: 8%; animation-delay: 1s; }
+  .float-star.s3 { bottom: 15%; left: 12%; animation-delay: 1.5s; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  /* 环境层：背景呼吸 */
+  .hero::before { content: ""; position: absolute; inset: -40px; background: radial-gradient(circle at 70% 30%, rgba(255,122,69,0.06), transparent 60%); animation: breathe 2s ease-in-out infinite; pointer-events: none; z-index: -1; }
+  @keyframes breathe { 0%, 100% { opacity: 0.95; } 50% { opacity: 1; } }
+  /* 信任标识 */
+  .trust { display: flex; justify-content: center; gap: 48px; padding: 24px 0 48px; color: #888; font-size: 15px; }
+  .trust span { display: flex; align-items: center; gap: 8px; }
+  /* 入场动画：标题 → 副标题 → 按钮 → 主视觉，ease-out-back，向上弹入 */
+  @keyframes popIn { from { opacity: 0; transform: translateY(24px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .anim-h1 { animation: popIn 300ms cubic-bezier(0.68, -0.55, 0.27, 1.55) both; }
+  .anim-p { animation: popIn 300ms cubic-bezier(0.68, -0.55, 0.27, 1.55) 80ms both; }
+  .anim-btns { animation: popIn 300ms cubic-bezier(0.68, -0.55, 0.27, 1.55) 160ms both; }
+  .anim-visual { animation: popIn 300ms cubic-bezier(0.68, -0.55, 0.27, 1.55) 240ms both; }
+  /* 响应式 */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; gap: 32px; padding: 32px 0 48px; }
+    .hero-text h1 { font-size: 32px; }
+    .hero-text p { font-size: 16px; }
+    .nav-links { display: none; }
+    .trust { flex-direction: column; gap: 12px; align-items: center; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <div class="logo">🌙 小月亮</div>
+    <div class="nav-links">
+      <a href="#">故事库</a>
+      <a href="#">睡前模式</a>
+      <a href="#">家长中心</a>
+    </div>
+    <button class="nav-cta">免费试用</button>
+  </nav>
+  <section class="hero">
+    <div class="hero-text">
+      <h1 class="anim-h1">让每个晚上都有故事</h1>
+      <p class="anim-p">小月亮故事机，每天一个新故事，陪孩子安然入睡。</p>
+      <div class="hero-btns anim-btns">
+        <button class="btn-primary">免费试用</button>
+        <button class="btn-secondary">看看故事</button>
+      </div>
+    </div>
+    <div class="hero-visual anim-visual">
+      <span class="float-star s1">⭐</span>
+      <span class="float-star s2">✨</span>
+      <span class="float-star s3">🌟</span>
+      <span class="moon">🌙</span>
+    </div>
+  </section>
+  <div class="trust">
+    <span>✓ 无广告</span>
+    <span>✓ 护眼模式</span>
+    <span>✓ 家长可控</span>
+  </div>
+</div>
+</body>
+</html>

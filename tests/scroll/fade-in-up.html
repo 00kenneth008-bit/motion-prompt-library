@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>时光腕表 — 品牌故事</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0B0B0F; color: #F5F1E8; min-height: 100vh; overflow-x: hidden; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  /* 环境层：背景光晕呼吸 */
+  .ambient { position: fixed; inset: 0; background: radial-gradient(circle at 20% 30%, rgba(245,241,232,0.05), transparent 50%); animation: breathe 3s ease-in-out infinite; pointer-events: none; z-index: 0; }
+  @keyframes breathe { 0%, 100% { opacity: 0.97; } 50% { opacity: 1; } }
+  /* 导航 */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .logo { font-size: 22px; font-weight: 700; letter-spacing: 3px; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: #B8B4A8; text-decoration: none; font-size: 16px; }
+  /* 首屏 */
+  .hero { text-align: center; padding: 72px 0 88px; }
+  .hero h1 { font-size: 52px; font-weight: 600; letter-spacing: 8px; }
+  .hero p { font-size: 18px; color: #B8B4A8; margin-top: 20px; }
+  /* 故事段落 */
+  .story { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding: 80px 0; border-top: 1px solid rgba(245,241,232,0.10); }
+  .story.reverse .story-text { order: 2; }
+  .story.reverse .story-visual { order: 1; }
+  .story h2 { font-size: 32px; font-weight: 600; letter-spacing: 2px; margin-bottom: 16px; }
+  .story p { font-size: 17px; color: #B8B4A8; line-height: 1.8; }
+  .story-visual { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; height: 320px; display: flex; align-items: center; justify-content: center; font-size: 96px; }
+  .caption { margin-top: 14px; font-size: 14px; color: #8A867C; letter-spacing: 1px; text-align: center; }
+  /* 渐入：600ms 上移 24px，间隔 120ms；大图 700ms；阈值 15% */
+  .reveal { opacity: 0; transform: translateY(24px); }
+  .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 600ms cubic-bezier(0.4,0,0.2,1), transform 600ms cubic-bezier(0.4,0,0.2,1); }
+  .reveal.visible.d1 { transition-delay: 120ms; }
+  .reveal.visible.d2 { transition-delay: 240ms; }
+  .reveal-img.visible { transition-duration: 700ms; }
+  .reveal-cap.visible { transition-delay: 150ms; }
+  /* CTA 与页脚 */
+  .cta { text-align: center; padding: 88px 0; border-top: 1px solid rgba(245,241,232,0.10); }
+  .cta h2 { font-size: 34px; font-weight: 600; letter-spacing: 3px; margin-bottom: 28px; }
+  .btn-primary { background: #F5F1E8; color: #0B0B0F; border: none; padding: 14px 36px; border-radius: 999px; font-size: 17px; font-weight: 600; cursor: pointer; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+  .btn-primary:hover { opacity: 0.85; }
+  footer { text-align: center; color: #8A867C; font-size: 14px; padding: 32px 0 40px; border-top: 1px solid rgba(245,241,232,0.10); letter-spacing: 1px; }
+  @media (max-width: 768px) {
+    .story { grid-template-columns: 1fr; gap: 28px; padding: 56px 0; }
+    .story.reverse .story-text { order: 1; }
+    .story.reverse .story-visual { order: 2; }
+    .hero h1 { font-size: 34px; }
+    .hero p { font-size: 16px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="container">
+  <nav>
+    <div class="logo">时光 SHIGUANG</div>
+    <div class="nav-links">
+      <a href="#">系列</a>
+      <a href="#">工艺</a>
+      <a href="#">故事</a>
+      <a href="#">门店</a>
+    </div>
+  </nav>
+  <section class="hero">
+    <h1>时光有形</h1>
+    <p>一枚腕表，一段可以戴在手上的时间。</p>
+  </section>
+  <section class="story" data-reveal-group>
+    <div class="story-text">
+      <h2 class="reveal">第一章 · 起源</h2>
+      <p class="reveal d1">第一块表诞生在一间小小的工作室里。没有生产线，只有一张工作台、一盏灯，和一颗想把时间做好的心。</p>
+    </div>
+    <div>
+      <div class="story-visual reveal reveal-img d1">⌚</div>
+      <div class="caption reveal reveal-cap d2">初代机芯 · 手工装配</div>
+    </div>
+  </section>
+  <section class="story reverse" data-reveal-group>
+    <div class="story-text">
+      <h2 class="reveal">第二章 · 工艺</h2>
+      <p class="reveal d1">每一枚表盘都要经过打磨、抛光、装配三道工序。慢，是我们唯一不肯省掉的东西。</p>
+    </div>
+    <div>
+      <div class="story-visual reveal reveal-img d1">⚙️</div>
+      <div class="caption reveal reveal-cap d2">机芯打磨 · 三道工序</div>
+    </div>
+  </section>
+  <section class="story" data-reveal-group>
+    <div class="story-text">
+      <h2 class="reveal">第三章 · 传承</h2>
+      <p class="reveal d1">好的表不会过时，它只会陪着主人走过更多时间，成为家里传下去的一件东西。</p>
+    </div>
+    <div>
+      <div class="story-visual reveal reveal-img d1">🎁</div>
+      <div class="caption reveal reveal-cap d2">传家之选 · 隽永设计</div>
+    </div>
+  </section>
+  <section class="story reverse" data-reveal-group>
+    <div class="story-text">
+      <h2 class="reveal">第四章 · 未来</h2>
+      <p class="reveal d1">我们还在那间工作室里，只是灯更亮了，工作台更长了。想做的事没变：把时间做好。</p>
+    </div>
+    <div>
+      <div class="story-visual reveal reveal-img d1">🌅</div>
+      <div class="caption reveal reveal-cap d2">新的篇章 · 正在书写</div>
+    </div>
+  </section>
+  <section class="cta">
+    <h2>探索系列</h2>
+    <button class="btn-primary">探索系列</button>
+  </section>
+  <footer>时光腕表 · 始于一间小小的工作室</footer>
+</div>
+<script>
+(function () {
+  // 渐入：IntersectionObserver，阈值 15%，触发一次
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('[data-reveal-group]').forEach(function (g) { io.observe(g); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>示例产品 — 页脚</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F7F8FA; color: #222; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .spacer { height: 70vh; display: flex; align-items: center; justify-content: center; color: #999; font-size: 18px; }
+  footer { border-top: 1px solid #E8E8E8; padding: 64px 0 0; background: #fff; }
+  .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.4fr; gap: 40px; padding-bottom: 48px; }
+  .footer-brand .logo { font-size: 22px; font-weight: 700; color: #1677FF; margin-bottom: 12px; }
+  .footer-brand p { font-size: 16px; color: #666; line-height: 1.7; }
+  .footer-col h4 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+  .footer-col a { display: block; font-size: 16px; color: #666; text-decoration: none; padding: 5px 0; transition: color 200ms cubic-bezier(0.2,0,0,1); }
+  .footer-col a:hover { color: #1677FF; }
+  .footer-sub h4 { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+  .footer-sub p { font-size: 16px; color: #666; line-height: 1.7; margin-bottom: 16px; }
+  .sub-form { display: flex; gap: 8px; }
+  .sub-form input { flex: 1; min-width: 0; padding: 11px 14px; font-size: 16px; border: 1px solid #D9D9D9; border-radius: 8px; outline: none; }
+  .sub-form input:focus { border-color: #1677FF; }
+  .sub-form input.error { border-color: #E5484D; }
+  .sub-form button { background: #1677FF; color: #fff; border: none; padding: 11px 20px; border-radius: 8px; font-size: 16px; cursor: pointer; white-space: nowrap; transition: background-color 200ms cubic-bezier(0.2,0,0,1); }
+  .sub-form button:hover { background-color: #0E5ED6; }
+  .sub-form button:disabled { opacity: 0.6; cursor: default; }
+  .sub-error { font-size: 14px; color: #E5484D; margin-top: 8px; opacity: 0; transition: opacity 200ms cubic-bezier(0.2,0,0,1); }
+  .sub-error.show { opacity: 1; }
+  .sub-success { font-size: 16px; color: #1677FF; margin-top: 8px; opacity: 0; transform: translateY(12px); transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); }
+  .sub-success.show { opacity: 1; transform: translateY(0); }
+  .sub-form.hidden-form { opacity: 0; transform: translateY(-12px); transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); pointer-events: none; }
+  .footer-bottom { border-top: 1px solid #E8E8E8; padding: 20px 0 28px; display: flex; justify-content: space-between; font-size: 14px; color: #999; }
+  .footer-bottom a { color: #999; text-decoration: none; margin-left: 20px; }
+  /* 揭示：透明度 + 上移 16px，400ms，间隔 80ms；底栏晚 100ms */
+  .reveal { opacity: 0; transform: translateY(16px); }
+  .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); }
+  .reveal.visible.d1 { transition-delay: 80ms; }
+  .reveal.visible.d2 { transition-delay: 160ms; }
+  .reveal.visible.d3 { transition-delay: 240ms; }
+  .footer-bottom { opacity: 0; transform: translateY(16px); transition: opacity 400ms cubic-bezier(0.2,0,0,1), transform 400ms cubic-bezier(0.2,0,0,1); transition-delay: 100ms; }
+  footer.revealed .footer-bottom { opacity: 1; transform: translateY(0); }
+  /* 提交中按钮 300ms */
+  .sub-form button.busy { transition: opacity 300ms cubic-bezier(0.2,0,0,1); }
+  @media (max-width: 768px) {
+    .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="spacer">向下滚动查看页脚 ↓</div>
+</div>
+<footer data-reveal-group id="siteFooter">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand reveal">
+        <div class="logo">示例产品</div>
+        <p>让团队协作更简单。任务、文档、日程放在一处。</p>
+      </div>
+      <div class="footer-col reveal d1">
+        <h4>产品</h4>
+        <a href="#">功能介绍</a>
+        <a href="#">定价</a>
+        <a href="#">更新日志</a>
+        <a href="#">下载应用</a>
+        <a href="#">集成中心</a>
+      </div>
+      <div class="footer-col reveal d2">
+        <h4>公司</h4>
+        <a href="#">关于我们</a>
+        <a href="#">加入我们</a>
+        <a href="#">博客</a>
+        <a href="#">联系我们</a>
+      </div>
+      <div class="footer-sub reveal d3">
+        <h4>订阅更新</h4>
+        <p>每月一封产品更新，不发广告。</p>
+        <form class="sub-form" id="subForm" novalidate>
+          <label for="subEmail" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">邮箱地址</label>
+          <input type="email" id="subEmail" placeholder="输入你的邮箱">
+          <button type="submit" id="subBtn">订阅</button>
+        </form>
+        <p class="sub-error" id="subError">请输入正确的邮箱地址</p>
+        <p class="sub-success" id="subSuccess">✓ 订阅成功，每周一封更新发到你的邮箱</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 示例公司 版权所有</span>
+      <span><a href="#">隐私政策</a><a href="#">服务条款</a></span>
+    </div>
+  </div>
+</footer>
+<script>
+(function () {
+  // 揭示：IntersectionObserver，阈值 20%
+  var footer = document.getElementById('siteFooter');
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        footer.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
+        footer.classList.add('revealed');
+        io.unobserve(footer);
+      }
+    });
+  }, { threshold: 0.2 });
+  io.observe(footer);
+  // 订阅提交：校验 → 提交中 → 成功态
+  var form = document.getElementById('subForm');
+  var input = document.getElementById('subEmail');
+  var btn = document.getElementById('subBtn');
+  var err = document.getElementById('subError');
+  var ok = document.getElementById('subSuccess');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var val = input.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      input.classList.add('error');
+      err.classList.add('show');
+      return;
+    }
+    input.classList.remove('error');
+    err.classList.remove('show');
+    btn.disabled = true;
+    btn.classList.add('busy');
+    btn.textContent = '提交中…';
+    setTimeout(function () {
+      form.classList.add('hidden-form');
+      ok.classList.add('show');
+    }, 300);
+  });
+  input.addEventListener('input', function () {
+    input.classList.remove('error');
+    err.classList.remove('show');
+  });
+})();
+</script>
+</body>
+</html>

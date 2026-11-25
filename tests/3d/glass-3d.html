@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>听见未来 — 璃音耳机</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0B0B0F; color: #F5F1E8; min-height: 100vh; overflow-x: hidden; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  /* 环境层：背景光晕呼吸 */
+  .ambient { position: fixed; inset: 0; background: radial-gradient(circle at 70% 20%, rgba(245,241,232,0.07), transparent 55%); animation: breathe 3s ease-in-out infinite; pointer-events: none; z-index: 0; }
+  @keyframes breathe { 0%, 100% { opacity: 0.97; } 50% { opacity: 1; } }
+  /* 导航 */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .logo { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: #B8B4A8; text-decoration: none; font-size: 16px; }
+  /* Hero */
+  .hero { text-align: center; padding: 56px 0 40px; }
+  .hero h1 { font-size: 48px; font-weight: 600; letter-spacing: 6px; }
+  .hero p { font-size: 18px; color: #B8B4A8; margin: 18px 0 28px; }
+  .btn-primary { background: #F5F1E8; color: #0B0B0F; border: none; padding: 14px 36px; border-radius: 999px; font-size: 17px; font-weight: 600; cursor: pointer; transition: opacity 400ms cubic-bezier(0.4,0,0.2,1); }
+  .btn-primary:hover { opacity: 0.85; }
+  /* 玻璃卡片组：纵深三层 */
+  .card-stage { perspective: 1200px; padding: 24px 0 64px; }
+  .card-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; transform-style: preserve-3d; transition: transform 600ms cubic-bezier(0.4,0,0.2,1); will-change: transform; }
+  .glass-card { position: relative; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 20px; padding: 32px 24px; text-align: center; transform-style: preserve-3d; transition: transform 600ms cubic-bezier(0.4,0,0.2,1); }
+  .glass-card.z0 { transform: translateZ(0); }
+  .glass-card.z1 { transform: translateZ(-60px); }
+  .glass-card.z2 { transform: translateZ(-120px); }
+  .glass-card:hover { transform: translateZ(12px); }
+  .glass-card.z1:hover { transform: translateZ(-48px); }
+  .glass-card.z2:hover { transform: translateZ(-108px); }
+  .glass-card .icon { font-size: 64px; line-height: 1; }
+  .glass-card h3 { font-size: 20px; font-weight: 600; margin: 18px 0 8px; letter-spacing: 1px; }
+  .glass-card .price { font-size: 17px; color: #D8CFAF; }
+  /* 次要层：卡片后方细光晕 */
+  .glass-card::after { content: ""; position: absolute; inset: 12px -8px -12px; border: 1px solid rgba(245,241,232,0.10); border-radius: 20px; z-index: -1; transform: translateZ(-30px); }
+  /* 入场：依次淡入上移 600ms，间隔 120ms */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .anim-1 { animation: fadeUp 600ms cubic-bezier(0.4,0,0.2,1) both; }
+  .anim-2 { animation: fadeUp 600ms cubic-bezier(0.4,0,0.2,1) 120ms both; }
+  .anim-3 { animation: fadeUp 600ms cubic-bezier(0.4,0,0.2,1) 240ms both; }
+  .trust { text-align: center; color: #8A867C; font-size: 14px; padding-bottom: 48px; letter-spacing: 1px; }
+  @media (max-width: 768px) {
+    .card-group { grid-template-columns: 1fr; }
+    .glass-card.z1 { transform: translateY(-12px); }
+    .glass-card.z2 { transform: translateY(-24px); }
+    .hero h1 { font-size: 32px; }
+    .hero p { font-size: 16px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="container">
+  <nav>
+    <div class="logo">璃音 LIYIN</div>
+    <div class="nav-links">
+      <a href="#">产品</a>
+      <a href="#">技术</a>
+      <a href="#">故事</a>
+      <a href="#">支持</a>
+    </div>
+  </nav>
+  <section class="hero">
+    <h1>听见未来</h1>
+    <p>璃音旗舰降噪耳机，每一个细节都为声音而生。</p>
+    <button class="btn-primary">了解更多</button>
+  </section>
+  <div class="card-stage">
+    <div class="card-group" id="cardGroup">
+      <article class="glass-card z0 anim-1">
+        <div class="icon">🎧</div>
+        <h3>璃音 One</h3>
+        <div class="price">¥2,499</div>
+      </article>
+      <article class="glass-card z1 anim-2">
+        <div class="icon">🎵</div>
+        <h3>璃音 Air</h3>
+        <div class="price">¥1,299</div>
+      </article>
+      <article class="glass-card z2 anim-3">
+        <div class="icon">🔊</div>
+        <h3>璃音 Max</h3>
+        <div class="price">¥3,999</div>
+      </article>
+    </div>
+  </div>
+  <div class="trust">免费试听 30 天 · 两年质保 · 顺丰包邮</div>
+</div>
+<script>
+(function () {
+  var group = document.getElementById('cardGroup');
+  var stage = document.querySelector('.card-stage');
+  // 鼠标移动：整组绕 X/Y 轴轻微倾斜，最大 6°，600ms 回正
+  stage.addEventListener('mousemove', function (e) {
+    var r = stage.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width - 0.5;
+    var y = (e.clientY - r.top) / r.height - 0.5;
+    group.style.transform = 'rotateY(' + (x * 6).toFixed(2) + 'deg) rotateX(' + (-y * 6).toFixed(2) + 'deg)';
+  });
+  stage.addEventListener('mouseleave', function () {
+    group.style.transform = 'rotateY(0deg) rotateX(0deg)';
+  });
+})();
+</script>
+</body>
+</html>

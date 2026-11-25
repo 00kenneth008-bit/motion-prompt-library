@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云帆协作 — 团队效率工具</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #F7F8FA; color: #222; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  /* 导航 */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .logo { font-size: 22px; font-weight: 700; color: #1677FF; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: #555; text-decoration: none; font-size: 16px; }
+  .nav-login { color: #1677FF; font-size: 16px; background: none; border: none; cursor: pointer; }
+  .nav-cta { background: #1677FF; color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: background-color 200ms cubic-bezier(0.2,0,0,1); }
+  .nav-cta:hover { background-color: #0E5ED6; }
+  /* 首屏 */
+  .hero { text-align: center; padding: 48px 0 40px; }
+  .hero h1 { font-size: 40px; font-weight: 700; }
+  .hero p { font-size: 18px; color: #666; margin: 16px 0 28px; }
+  .btn-primary { background: #1677FF; color: #fff; border: none; padding: 14px 36px; border-radius: 8px; font-size: 17px; font-weight: 600; cursor: pointer; transition: background-color 200ms cubic-bezier(0.2,0,0,1); }
+  .btn-primary:hover { background-color: #0E5ED6; }
+  /* 翻转卡片组 */
+  .flip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 16px 0 48px; perspective: 1000px; }
+  .flip-card { height: 260px; perspective: 1000px; cursor: pointer; outline: none; }
+  .flip-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 350ms cubic-bezier(0.2,0,0,1); }
+  .flip-card:hover .flip-inner, .flip-card:focus-visible .flip-inner, .flip-card.pinned .flip-inner { transform: rotateY(180deg); }
+  .flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: #fff; border: 1px solid #E8E8E8; border-radius: 8px; padding: 32px 24px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,0.05); transition: box-shadow 350ms cubic-bezier(0.2,0,0,1); }
+  .flip-card:hover .flip-face, .flip-card:focus-visible .flip-face { box-shadow: 0 8px 28px rgba(0,0,0,0.10); }
+  .flip-back { transform: rotateY(180deg); background: #F0F6FF; }
+  .flip-face .icon { font-size: 40px; }
+  .flip-face h3 { font-size: 20px; font-weight: 700; margin: 14px 0 8px; }
+  .flip-face p { font-size: 16px; color: #666; line-height: 1.6; }
+  .flip-back ul { list-style: none; }
+  .flip-back li { font-size: 16px; color: #444; line-height: 1.9; }
+  .flip-back a { margin-top: 14px; color: #1677FF; font-size: 16px; text-decoration: none; }
+  /* 入场：依次淡入 400ms，间隔 80ms */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .anim-1 { animation: fadeUp 400ms cubic-bezier(0.2,0,0,1) both; }
+  .anim-2 { animation: fadeUp 400ms cubic-bezier(0.2,0,0,1) 80ms both; }
+  .anim-3 { animation: fadeUp 400ms cubic-bezier(0.2,0,0,1) 160ms both; }
+  .foot { text-align: center; color: #999; font-size: 14px; padding-bottom: 40px; }
+  @media (max-width: 768px) {
+    .flip-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 30px; }
+    .hero p { font-size: 16px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <div class="logo">⛵ 云帆协作</div>
+    <div class="nav-links">
+      <a href="#">功能</a>
+      <a href="#">价格</a>
+      <a href="#">客户</a>
+      <a href="#">文档</a>
+      <button class="nav-login">登录</button>
+      <button class="nav-cta">免费注册</button>
+    </div>
+  </nav>
+  <section class="hero">
+    <h1>让团队协作更简单</h1>
+    <p>任务、文档、日程放在一处，团队不再到处找东西。</p>
+    <button class="btn-primary">开始使用</button>
+  </section>
+  <div class="flip-grid">
+    <div class="flip-card anim-1" tabindex="0" role="button" aria-label="任务管理详情">
+      <div class="flip-inner">
+        <div class="flip-face">
+          <div class="icon">📋</div>
+          <h3>任务管理</h3>
+          <p>任务分派、进度一目了然。</p>
+        </div>
+        <div class="flip-face flip-back">
+          <ul>
+            <li>✓ 看板、列表、日历三种视图</li>
+            <li>✓ 截止提醒自动推送</li>
+            <li>✓ 子任务无限拆分</li>
+          </ul>
+          <a href="#">了解任务管理 →</a>
+        </div>
+      </div>
+    </div>
+    <div class="flip-card anim-2" tabindex="0" role="button" aria-label="文档协作详情">
+      <div class="flip-inner">
+        <div class="flip-face">
+          <div class="icon">📄</div>
+          <h3>文档协作</h3>
+          <p>多人同时编辑，改动实时同步。</p>
+        </div>
+        <div class="flip-face flip-back">
+          <ul>
+            <li>✓ 多人实时协同编辑</li>
+            <li>✓ 版本历史随时回退</li>
+            <li>✓ 评论 @ 提醒到人</li>
+          </ul>
+          <a href="#">了解文档协作 →</a>
+        </div>
+      </div>
+    </div>
+    <div class="flip-card anim-3" tabindex="0" role="button" aria-label="日程安排详情">
+      <div class="flip-inner">
+        <div class="flip-face">
+          <div class="icon">📅</div>
+          <h3>日程安排</h3>
+          <p>会议、排期自动对齐不冲突。</p>
+        </div>
+        <div class="flip-face flip-back">
+          <ul>
+            <li>✓ 团队日历一键订阅</li>
+            <li>✓ 会议冲突自动提醒</li>
+            <li>✓ 循环日程批量创建</li>
+          </ul>
+          <a href="#">了解日程安排 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">免费版支持 5 人团队 · 无需信用卡</div>
+</div>
+<script>
+(function () {
+  // 点击固定翻面，再点翻回
+  var cards = document.querySelectorAll('.flip-card');
+  cards.forEach(function (card) {
+    card.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') return;
+      card.classList.toggle('pinned');
+    });
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.classList.toggle('pinned'); }
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>彩虹积木 — 会变的魔方朋友</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #FFF9F0; color: #333; min-height: 100vh; overflow-x: hidden; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; }
+  /* 环境层：背景漂浮小图形 */
+  .float-shape { position: absolute; font-size: 26px; opacity: 0.65; animation: floaty 4s ease-in-out infinite; pointer-events: none; }
+  .float-shape.f1 { top: 12%; left: 4%; animation-delay: 0.4s; }
+  .float-shape.f2 { top: 18%; right: 6%; animation-delay: 1.2s; }
+  .float-shape.f3 { bottom: 12%; left: 10%; animation-delay: 1.8s; }
+  @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  /* 导航 */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .logo { font-size: 22px; font-weight: 800; color: #FF7A45; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: #555; text-decoration: none; font-size: 16px; }
+  /* 首屏 */
+  .hero { text-align: center; padding: 40px 0 8px; }
+  .hero h1 { font-size: 44px; font-weight: 800; color: #222; }
+  .hero p { font-size: 18px; color: #666; margin: 16px 0 28px; }
+  .btn-primary { background: #FF7A45; color: #fff; border: none; padding: 14px 32px; border-radius: 16px; font-size: 17px; font-weight: 700; cursor: pointer; transition: transform 300ms cubic-bezier(0.68,-0.55,0.27,1.55); }
+  .btn-primary:hover { transform: scale(1.05); }
+  .btn-primary:active { transform: scale(0.97); }
+  /* 立方体展示区 */
+  .cube-stage { perspective: 1000px; padding: 48px 0 16px; display: flex; align-items: center; justify-content: center; gap: 32px; }
+  .arrow { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #FF7A45; background: #fff; color: #FF7A45; font-size: 24px; cursor: pointer; flex-shrink: 0; transition: transform 300ms cubic-bezier(0.68,-0.55,0.27,1.55); }
+  .arrow:hover { transform: scale(1.08); }
+  .cube-wrap { width: 220px; height: 220px; position: relative; }
+  .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; cursor: grab; }
+  .cube.dragging { cursor: grabbing; }
+  .face { position: absolute; width: 220px; height: 220px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #fff; font-weight: 800; backface-visibility: hidden; border: 4px solid rgba(255,255,255,0.65); }
+  .face .emoji { font-size: 72px; line-height: 1; }
+  .face .label { font-size: 20px; }
+  .face.f1 { background: #FF7A45; transform: rotateY(0deg) translateZ(110px); }
+  .face.f2 { background: #FFC53D; transform: rotateY(90deg) translateZ(110px); }
+  .face.f3 { background: #52C41A; transform: rotateY(180deg) translateZ(110px); }
+  .face.f4 { background: #1890FF; transform: rotateY(-90deg) translateZ(110px); }
+  .face.f5 { background: #EB2F96; transform: rotateX(90deg) translateZ(110px); }
+  .face.f6 { background: #722ED1; transform: rotateX(-90deg) translateZ(110px); }
+  /* 次要层：立方体下方阴影，随旋转缩放 */
+  .cube-shadow { width: 170px; height: 26px; margin: 28px auto 0; background: rgba(0,0,0,0.14); border-radius: 50%; filter: blur(6px); transition: transform 300ms cubic-bezier(0.68,-0.55,0.27,1.55); }
+  /* 入场：立方体弹入 */
+  @keyframes popIn { from { opacity: 0; transform: translateY(24px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .anim-title { animation: popIn 300ms cubic-bezier(0.68,-0.55,0.27,1.55) both; }
+  .anim-cube { animation: popIn 300ms cubic-bezier(0.68,-0.55,0.27,1.55) 80ms both; }
+  .selling { display: flex; justify-content: center; gap: 48px; padding: 32px 0 48px; color: #888; font-size: 15px; }
+  @media (max-width: 768px) {
+    .cube-wrap { width: 160px; height: 160px; }
+    .face { width: 160px; height: 160px; }
+    .face.f1 { transform: rotateY(0deg) translateZ(80px); }
+    .face.f2 { transform: rotateY(90deg) translateZ(80px); }
+    .face.f3 { transform: rotateY(180deg) translateZ(80px); }
+    .face.f4 { transform: rotateY(-90deg) translateZ(80px); }
+    .face.f5 { transform: rotateX(90deg) translateZ(80px); }
+    .face.f6 { transform: rotateX(-90deg) translateZ(80px); }
+    .face .emoji { font-size: 52px; }
+    .hero h1 { font-size: 32px; }
+    .hero p { font-size: 16px; }
+    .nav-links { display: none; }
+    .selling { flex-direction: column; gap: 12px; align-items: center; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <span class="float-shape f1">⭐</span>
+  <span class="float-shape f2">✨</span>
+  <span class="float-shape f3">🌈</span>
+  <nav>
+    <div class="logo">🧱 彩虹积木</div>
+    <div class="nav-links">
+      <a href="#">玩法</a>
+      <a href="#">系列</a>
+      <a href="#">家长中心</a>
+    </div>
+  </nav>
+  <section class="hero">
+    <h1 class="anim-title">会变的魔方朋友</h1>
+    <p class="anim-title">转一转，六个面六个小伙伴，每天都有新玩法。</p>
+    <button class="btn-primary">看看玩法</button>
+  </section>
+  <div class="cube-stage">
+    <button class="arrow" id="prevBtn" aria-label="上一面">‹</button>
+    <div class="cube-wrap anim-cube">
+      <div class="cube" id="cube">
+        <div class="face f1"><span class="emoji">🦊</span><span class="label">小狐狸</span></div>
+        <div class="face f2"><span class="emoji">🐰</span><span class="label">小兔子</span></div>
+        <div class="face f3"><span class="emoji">🐻</span><span class="label">小熊</span></div>
+        <div class="face f4"><span class="emoji">🐼</span><span class="label">小熊猫</span></div>
+        <div class="face f5"><span class="emoji">🦁</span><span class="label">小狮子</span></div>
+        <div class="face f6"><span class="emoji">🐸</span><span class="label">小青蛙</span></div>
+      </div>
+      <div class="cube-shadow" id="cubeShadow"></div>
+    </div>
+    <button class="arrow" id="nextBtn" aria-label="下一面">›</button>
+  </div>
+  <div class="selling">
+    <span>✓ 圆角防磕碰</span>
+    <span>✓ 食品级材质</span>
+    <span>✓ 3 岁+ 可玩</span>
+  </div>
+</div>
+<script>
+(function () {
+  var cube = document.getElementById('cube');
+  var shadow = document.getElementById('cubeShadow');
+  var rotY = 0, rotX = 0, dragging = false, startX = 0, startRotY = 0, idleTimer = null, autoTimer = null;
+  var EASE_BACK = 'cubic-bezier(0.68,-0.55,0.27,1.55)';
+  function apply(rotYv, rotXv, animate) {
+    cube.style.transition = animate ? 'transform 300ms ' + EASE_BACK : 'none';
+    cube.style.transform = 'rotateY(' + rotYv + 'deg) rotateX(' + rotXv + 'deg)';
+    // 次要层：阴影随旋转缩放 30–50%
+    var s = 1 - (Math.abs(((rotYv % 180) + 180) % 180 - 90) / 90) * 0.2;
+    shadow.style.transform = 'scaleX(' + s.toFixed(2) + ')';
+  }
+  function snap() {
+    rotY = Math.round(rotY / 90) * 90;
+    rotX = Math.round(rotX / 90) * 90;
+    apply(rotY, rotX, true);
+  }
+  function pokeIdle() {
+    clearTimeout(idleTimer); clearInterval(autoTimer);
+    idleTimer = setTimeout(function () {
+      autoTimer = setInterval(function () { rotY += 90; apply(rotY, rotX, true); }, 6000);
+    }, 5000);
+  }
+  cube.addEventListener('pointerdown', function (e) {
+    dragging = true; startX = e.clientX; startRotY = rotY;
+    cube.classList.add('dragging'); cube.setPointerCapture(e.pointerId); pokeIdle();
+  });
+  cube.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    rotY = startRotY + (e.clientX - startX) * 0.6;
+    apply(rotY, rotX, false);
+  });
+  cube.addEventListener('pointerup', function () { dragging = false; cube.classList.remove('dragging'); snap(); pokeIdle(); });
+  document.getElementById('prevBtn').addEventListener('click', function () { rotY -= 90; apply(rotY, rotX, true); pokeIdle(); });
+  document.getElementById('nextBtn').addEventListener('click', function () { rotY += 90; apply(rotY, rotX, true); pokeIdle(); });
+  pokeIdle();
+})();
+</script>
+</body>
+</html>
